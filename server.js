@@ -57,3 +57,4 @@ app.listen(port, () => {
   console.log("THIS IS THE CORRECT SERVER FILE");
   console.log(`Server running on port ${port}`);
 });
+console.log("🚨 This is the real server.js from George's Mac");
