@@ -61,3 +61,11 @@ app.listen(port, () => {
   console.log("🚨 This is the real server.js from George's Mac");
   console.log(`Server running on port ${port}`);
 });
+app.get("/logs", async (req, res) => {
+  try {
+    const result = await pool.query("SELECT * FROM logs ORDER BY timestamp DESC");
+    res.json(result.rows);
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+});

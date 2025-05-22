@@ -1,140 +1,123 @@
-<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
-<html>
+<!DOCTYPE html>
+<html lang="en">
 <head>
-  <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
-  <meta http-equiv="Content-Style-Type" content="text/css">
-  <title></title>
-  <meta name="Generator" content="Cocoa HTML Writer">
-  <meta name="CocoaVersion" content="2575.6">
-  <style type="text/css">
-    p.p1 {margin: 0.0px 0.0px 0.0px 0.0px; font: 12.0px Helvetica; -webkit-text-stroke: #000000}
-    p.p2 {margin: 0.0px 0.0px 0.0px 0.0px; font: 12.0px Helvetica; -webkit-text-stroke: #000000; min-height: 14.0px}
-    span.s1 {font-kerning: none}
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Medication Admin</title>
+  <style>
+    body {
+      font-family: sans-serif;
+      background-color: #f4f4f4;
+      padding: 2rem;
+      max-width: 600px;
+      margin: auto;
+    }
+    h1, h2 {
+      color: #333;
+    }
+    form {
+      background: #fff;
+      padding: 1rem;
+      border-radius: 6px;
+      margin-bottom: 2rem;
+      box-shadow: 0 0 5px rgba(0,0,0,0.1);
+    }
+    label {
+      display: block;
+      margin-top: 0.5rem;
+    }
+    input {
+      width: 100%;
+      padding: 0.5rem;
+      margin-top: 0.25rem;
+    }
+    button {
+      margin-top: 1rem;
+      padding: 0.6rem 1rem;
+      background: #007bff;
+      color: white;
+      border: none;
+      border-radius: 4px;
+    }
+    .log-entry {
+      background: #fff;
+      padding: 0.75rem;
+      margin-bottom: 0.5rem;
+      border-left: 4px solid #007bff;
+      border-radius: 4px;
+    }
+    .timestamp {
+      color: #888;
+      font-size: 0.9em;
+    }
   </style>
 </head>
 <body>
-<p class="p1"><span class="s1">&lt;!DOCTYPE html&gt;</span></p>
-<p class="p1"><span class="s1">&lt;html lang="en"&gt;</span></p>
-<p class="p1"><span class="s1">&lt;head&gt;</span></p>
-<p class="p1"><span class="s1"><span class="Apple-converted-space">  </span>&lt;meta charset="UTF-8" /&gt;</span></p>
-<p class="p1"><span class="s1"><span class="Apple-converted-space">  </span>&lt;meta name="viewport" content="width=device-width, initial-scale=1.0" /&gt;</span></p>
-<p class="p1"><span class="s1"><span class="Apple-converted-space">  </span>&lt;title&gt;Medication Admin&lt;/title&gt;</span></p>
-<p class="p1"><span class="s1"><span class="Apple-converted-space">  </span>&lt;style&gt;</span></p>
-<p class="p1"><span class="s1"><span class="Apple-converted-space">    </span>body {</span></p>
-<p class="p1"><span class="s1"><span class="Apple-converted-space">      </span>font-family: sans-serif;</span></p>
-<p class="p1"><span class="s1"><span class="Apple-converted-space">      </span>background-color: #f4f4f4;</span></p>
-<p class="p1"><span class="s1"><span class="Apple-converted-space">      </span>padding: 2rem;</span></p>
-<p class="p1"><span class="s1"><span class="Apple-converted-space">      </span>max-width: 600px;</span></p>
-<p class="p1"><span class="s1"><span class="Apple-converted-space">      </span>margin: auto;</span></p>
-<p class="p1"><span class="s1"><span class="Apple-converted-space">    </span>}</span></p>
-<p class="p1"><span class="s1"><span class="Apple-converted-space">    </span>h1, h2 {</span></p>
-<p class="p1"><span class="s1"><span class="Apple-converted-space">      </span>color: #333;</span></p>
-<p class="p1"><span class="s1"><span class="Apple-converted-space">    </span>}</span></p>
-<p class="p1"><span class="s1"><span class="Apple-converted-space">    </span>form {</span></p>
-<p class="p1"><span class="s1"><span class="Apple-converted-space">      </span>background: #fff;</span></p>
-<p class="p1"><span class="s1"><span class="Apple-converted-space">      </span>padding: 1rem;</span></p>
-<p class="p1"><span class="s1"><span class="Apple-converted-space">      </span>border-radius: 6px;</span></p>
-<p class="p1"><span class="s1"><span class="Apple-converted-space">      </span>margin-bottom: 2rem;</span></p>
-<p class="p1"><span class="s1"><span class="Apple-converted-space">      </span>box-shadow: 0 0 5px rgba(0,0,0,0.1);</span></p>
-<p class="p1"><span class="s1"><span class="Apple-converted-space">    </span>}</span></p>
-<p class="p1"><span class="s1"><span class="Apple-converted-space">    </span>label {</span></p>
-<p class="p1"><span class="s1"><span class="Apple-converted-space">      </span>display: block;</span></p>
-<p class="p1"><span class="s1"><span class="Apple-converted-space">      </span>margin-top: 0.5rem;</span></p>
-<p class="p1"><span class="s1"><span class="Apple-converted-space">    </span>}</span></p>
-<p class="p1"><span class="s1"><span class="Apple-converted-space">    </span>input {</span></p>
-<p class="p1"><span class="s1"><span class="Apple-converted-space">      </span>width: 100%;</span></p>
-<p class="p1"><span class="s1"><span class="Apple-converted-space">      </span>padding: 0.5rem;</span></p>
-<p class="p1"><span class="s1"><span class="Apple-converted-space">      </span>margin-top: 0.25rem;</span></p>
-<p class="p1"><span class="s1"><span class="Apple-converted-space">    </span>}</span></p>
-<p class="p1"><span class="s1"><span class="Apple-converted-space">    </span>button {</span></p>
-<p class="p1"><span class="s1"><span class="Apple-converted-space">      </span>margin-top: 1rem;</span></p>
-<p class="p1"><span class="s1"><span class="Apple-converted-space">      </span>padding: 0.6rem 1rem;</span></p>
-<p class="p1"><span class="s1"><span class="Apple-converted-space">      </span>background: #007bff;</span></p>
-<p class="p1"><span class="s1"><span class="Apple-converted-space">      </span>color: white;</span></p>
-<p class="p1"><span class="s1"><span class="Apple-converted-space">      </span>border: none;</span></p>
-<p class="p1"><span class="s1"><span class="Apple-converted-space">      </span>border-radius: 4px;</span></p>
-<p class="p1"><span class="s1"><span class="Apple-converted-space">    </span>}</span></p>
-<p class="p1"><span class="s1"><span class="Apple-converted-space">    </span>.log-entry {</span></p>
-<p class="p1"><span class="s1"><span class="Apple-converted-space">      </span>background: #fff;</span></p>
-<p class="p1"><span class="s1"><span class="Apple-converted-space">      </span>padding: 0.75rem;</span></p>
-<p class="p1"><span class="s1"><span class="Apple-converted-space">      </span>margin-bottom: 0.5rem;</span></p>
-<p class="p1"><span class="s1"><span class="Apple-converted-space">      </span>border-left: 4px solid #007bff;</span></p>
-<p class="p1"><span class="s1"><span class="Apple-converted-space">      </span>border-radius: 4px;</span></p>
-<p class="p1"><span class="s1"><span class="Apple-converted-space">    </span>}</span></p>
-<p class="p1"><span class="s1"><span class="Apple-converted-space">    </span>.timestamp {</span></p>
-<p class="p1"><span class="s1"><span class="Apple-converted-space">      </span>color: #888;</span></p>
-<p class="p1"><span class="s1"><span class="Apple-converted-space">      </span>font-size: 0.9em;</span></p>
-<p class="p1"><span class="s1"><span class="Apple-converted-space">    </span>}</span></p>
-<p class="p1"><span class="s1"><span class="Apple-converted-space">  </span>&lt;/style&gt;</span></p>
-<p class="p1"><span class="s1">&lt;/head&gt;</span></p>
-<p class="p1"><span class="s1">&lt;body&gt;</span></p>
-<p class="p1"><span class="s1"><span class="Apple-converted-space">  </span>&lt;h1&gt;Scan Student ID and Medication&lt;/h1&gt;</span></p>
-<p class="p2"><span class="s1"></span><br></p>
-<p class="p1"><span class="s1"><span class="Apple-converted-space">  </span>&lt;form id="med-form"&gt;</span></p>
-<p class="p1"><span class="s1"><span class="Apple-converted-space">    </span>&lt;label&gt;Student ID:&lt;/label&gt;</span></p>
-<p class="p1"><span class="s1"><span class="Apple-converted-space">    </span>&lt;input type="text" id="studentId" required /&gt;</span></p>
-<p class="p1"><span class="s1"><span class="Apple-converted-space">    </span>&lt;label&gt;Medication Barcode:&lt;/label&gt;</span></p>
-<p class="p1"><span class="s1"><span class="Apple-converted-space">    </span>&lt;input type="text" id="medCode" required /&gt;</span></p>
-<p class="p1"><span class="s1"><span class="Apple-converted-space">    </span>&lt;button type="submit"&gt;Log Administration&lt;/button&gt;</span></p>
-<p class="p1"><span class="s1"><span class="Apple-converted-space">  </span>&lt;/form&gt;</span></p>
-<p class="p2"><span class="s1"></span><br></p>
-<p class="p1"><span class="s1"><span class="Apple-converted-space">  </span>&lt;h2&gt;Live Medication Log&lt;/h2&gt;</span></p>
-<p class="p1"><span class="s1"><span class="Apple-converted-space">  </span>&lt;div id="live-log"&gt;Loading logs...&lt;/div&gt;</span></p>
-<p class="p2"><span class="s1"></span><br></p>
-<p class="p1"><span class="s1"><span class="Apple-converted-space">  </span>&lt;script&gt;</span></p>
-<p class="p1"><span class="s1"><span class="Apple-converted-space">    </span>// Handle form submission</span></p>
-<p class="p1"><span class="s1"><span class="Apple-converted-space">    </span>document.getElementById("med-form").addEventListener("submit", function (e) {</span></p>
-<p class="p1"><span class="s1"><span class="Apple-converted-space">      </span>e.preventDefault();</span></p>
-<p class="p1"><span class="s1"><span class="Apple-converted-space">      </span>const studentId = document.getElementById("studentId").value;</span></p>
-<p class="p1"><span class="s1"><span class="Apple-converted-space">      </span>const medCode = document.getElementById("medCode").value;</span></p>
-<p class="p2"><span class="s1"></span><br></p>
-<p class="p1"><span class="s1"><span class="Apple-converted-space">      </span>fetch("/log", {</span></p>
-<p class="p1"><span class="s1"><span class="Apple-converted-space">        </span>method: "POST",</span></p>
-<p class="p1"><span class="s1"><span class="Apple-converted-space">        </span>headers: { "Content-Type": "application/json" },</span></p>
-<p class="p1"><span class="s1"><span class="Apple-converted-space">        </span>body: JSON.stringify({ studentId, medCode })</span></p>
-<p class="p1"><span class="s1"><span class="Apple-converted-space">      </span>})</span></p>
-<p class="p1"><span class="s1"><span class="Apple-converted-space">      </span>.then(res =&gt; res.json())</span></p>
-<p class="p1"><span class="s1"><span class="Apple-converted-space">      </span>.then(data =&gt; {</span></p>
-<p class="p1"><span class="s1"><span class="Apple-converted-space">        </span>alert("Medication logged!");</span></p>
-<p class="p1"><span class="s1"><span class="Apple-converted-space">        </span>loadLiveLog();</span></p>
-<p class="p1"><span class="s1"><span class="Apple-converted-space">        </span>document.getElementById("med-form").reset();</span></p>
-<p class="p1"><span class="s1"><span class="Apple-converted-space">      </span>})</span></p>
-<p class="p1"><span class="s1"><span class="Apple-converted-space">      </span>.catch(err =&gt; alert("Error: " + err.message));</span></p>
-<p class="p1"><span class="s1"><span class="Apple-converted-space">    </span>});</span></p>
-<p class="p2"><span class="s1"></span><br></p>
-<p class="p1"><span class="s1"><span class="Apple-converted-space">    </span>// Fetch and display logs</span></p>
-<p class="p1"><span class="s1"><span class="Apple-converted-space">    </span>function loadLiveLog() {</span></p>
-<p class="p1"><span class="s1"><span class="Apple-converted-space">      </span>fetch("/logs")</span></p>
-<p class="p1"><span class="s1"><span class="Apple-converted-space">        </span>.then(res =&gt; res.json())</span></p>
-<p class="p1"><span class="s1"><span class="Apple-converted-space">        </span>.then(data =&gt; {</span></p>
-<p class="p1"><span class="s1"><span class="Apple-converted-space">          </span>const container = document.getElementById("live-log");</span></p>
-<p class="p1"><span class="s1"><span class="Apple-converted-space">          </span>container.innerHTML = "";</span></p>
-<p class="p2"><span class="s1"></span><br></p>
-<p class="p1"><span class="s1"><span class="Apple-converted-space">          </span>if (!data.length) {</span></p>
-<p class="p1"><span class="s1"><span class="Apple-converted-space">            </span>container.textContent = "No logs yet.";</span></p>
-<p class="p1"><span class="s1"><span class="Apple-converted-space">            </span>return;</span></p>
-<p class="p1"><span class="s1"><span class="Apple-converted-space">          </span>}</span></p>
-<p class="p2"><span class="s1"></span><br></p>
-<p class="p1"><span class="s1"><span class="Apple-converted-space">          </span>data.slice(0, 10).forEach(entry =&gt; {</span></p>
-<p class="p1"><span class="s1"><span class="Apple-converted-space">            </span>const div = document.createElement("div");</span></p>
-<p class="p1"><span class="s1"><span class="Apple-converted-space">            </span>div.className = "log-entry";</span></p>
-<p class="p1"><span class="s1"><span class="Apple-converted-space">            </span>const time = new Date(entry.timestamp).toLocaleString();</span></p>
-<p class="p1"><span class="s1"><span class="Apple-converted-space">            </span>div.innerHTML = `</span></p>
-<p class="p1"><span class="s1"><span class="Apple-converted-space">              </span>&lt;strong&gt;${entry.student_id}&lt;/strong&gt; – ${entry.med_code}&lt;br /&gt;</span></p>
-<p class="p1"><span class="s1"><span class="Apple-converted-space">              </span>&lt;span class="timestamp"&gt;${time}&lt;/span&gt;</span></p>
-<p class="p1"><span class="s1"><span class="Apple-converted-space">            </span>`;</span></p>
-<p class="p1"><span class="s1"><span class="Apple-converted-space">            </span>container.appendChild(div);</span></p>
-<p class="p1"><span class="s1"><span class="Apple-converted-space">          </span>});</span></p>
-<p class="p1"><span class="s1"><span class="Apple-converted-space">        </span>})</span></p>
-<p class="p1"><span class="s1"><span class="Apple-converted-space">        </span>.catch(err =&gt; {</span></p>
-<p class="p1"><span class="s1"><span class="Apple-converted-space">          </span>document.getElementById("live-log").textContent = "Error loading logs.";</span></p>
-<p class="p1"><span class="s1"><span class="Apple-converted-space">        </span>});</span></p>
-<p class="p1"><span class="s1"><span class="Apple-converted-space">    </span>}</span></p>
-<p class="p2"><span class="s1"></span><br></p>
-<p class="p1"><span class="s1"><span class="Apple-converted-space">    </span>loadLiveLog();</span></p>
-<p class="p1"><span class="s1"><span class="Apple-converted-space">    </span>setInterval(loadLiveLog, 10000); // Refresh every 10 seconds</span></p>
-<p class="p1"><span class="s1"><span class="Apple-converted-space">  </span>&lt;/script&gt;</span></p>
-<p class="p1"><span class="s1">&lt;/body&gt;</span></p>
-<p class="p1"><span class="s1">&lt;/html&gt;</span></p>
+  <h1>Scan Student ID and Medication</h1>
+
+  <form id="med-form">
+    <label>Student ID:</label>
+    <input type="text" id="studentId" required />
+    <label>Medication Barcode:</label>
+    <input type="text" id="medCode" required />
+    <button type="submit">Log Administration</button>
+  </form>
+
+  <h2>Live Medication Log</h2>
+  <div id="live-log">Loading logs...</div>
+
+  <script>
+    // Handle form submission
+    document.getElementById("med-form").addEventListener("submit", function (e) {
+      e.preventDefault();
+      const studentId = document.getElementById("studentId").value;
+      const medCode = document.getElementById("medCode").value;
+
+      fetch("/log", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ studentId, medCode })
+      })
+      .then(res => res.json())
+      .then(data => {
+        alert("Medication logged!");
+        loadLiveLog();
+        document.getElementById("med-form").reset();
+      })
+      .catch(err => alert("Error: " + err.message));
+    });
+
+    // Fetch and display logs
+    function loadLiveLog() {
+      fetch("/logs")
+        .then(res => res.json())
+        .then(data => {
+          const container = document.getElementById("live-log");
+          container.innerHTML = "";
+
+          if (!data.length) {
+            container.textContent = "No logs yet.";
+            return;
+          }
+
+          data.slice(0, 10).forEach(entry => {
+            const div = document.createElement("div");
+            div.className = "log-entry";
+            const time = new Date(entry.timestamp).toLocaleString();
+            div.innerHTML = `
+              <strong>${entry.student_id}</strong> – ${entry.med_code}<br />
+              <span class="timestamp">${time}</span>
+            `;
+            container.appendChild(div);
+          });
+        })
+        .catch(err => {
+          document.getElementById("live-log").textContent = "Error loading logs.";
+        });
+    }
+
+    loadLiveLog();
+    setInterval(loadLiveLog, 10000); // Refresh every 10 seconds
+  </script>
 </body>
 </html>
