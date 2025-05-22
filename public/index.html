@@ -1,123 +1,101 @@
-<!DOCTYPE html>
-<html lang="en">
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
+<html>
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Medication Admin</title>
-  <style>
-    body {
-      font-family: sans-serif;
-      background-color: #f4f4f4;
-      padding: 2rem;
-      max-width: 600px;
-      margin: auto;
-    }
-    h1, h2 {
-      color: #333;
-    }
-    form {
-      background: #fff;
-      padding: 1rem;
-      border-radius: 6px;
-      margin-bottom: 2rem;
-      box-shadow: 0 0 5px rgba(0,0,0,0.1);
-    }
-    label {
-      display: block;
-      margin-top: 0.5rem;
-    }
-    input {
-      width: 100%;
-      padding: 0.5rem;
-      margin-top: 0.25rem;
-    }
-    button {
-      margin-top: 1rem;
-      padding: 0.6rem 1rem;
-      background: #007bff;
-      color: white;
-      border: none;
-      border-radius: 4px;
-    }
-    .log-entry {
-      background: #fff;
-      padding: 0.75rem;
-      margin-bottom: 0.5rem;
-      border-left: 4px solid #007bff;
-      border-radius: 4px;
-    }
-    .timestamp {
-      color: #888;
-      font-size: 0.9em;
-    }
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+  <meta http-equiv="Content-Style-Type" content="text/css">
+  <title></title>
+  <meta name="Generator" content="Cocoa HTML Writer">
+  <meta name="CocoaVersion" content="2575.6">
+  <style type="text/css">
+    body {background-color: #f1f1f1}
+    span.s1 {font-kerning: none}
   </style>
 </head>
 <body>
-  <h1>Scan Student ID and Medication</h1>
-
-  <form id="med-form">
-    <label>Student ID:</label>
-    <input type="text" id="studentId" required />
-    <label>Medication Barcode:</label>
-    <input type="text" id="medCode" required />
-    <button type="submit">Log Administration</button>
-  </form>
-
-  <h2>Live Medication Log</h2>
-  <div id="live-log">Loading logs...</div>
-
-  <script>
-    // Handle form submission
-    document.getElementById("med-form").addEventListener("submit", function (e) {
-      e.preventDefault();
-      const studentId = document.getElementById("studentId").value;
-      const medCode = document.getElementById("medCode").value;
-
-      fetch("/log", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ studentId, medCode })
-      })
-      .then(res => res.json())
-      .then(data => {
-        alert("Medication logged!");
-        loadLiveLog();
-        document.getElementById("med-form").reset();
-      })
-      .catch(err => alert("Error: " + err.message));
-    });
-
-    // Fetch and display logs
-    function loadLiveLog() {
-      fetch("/logs")
-        .then(res => res.json())
-        .then(data => {
-          const container = document.getElementById("live-log");
-          container.innerHTML = "";
-
-          if (!data.length) {
-            container.textContent = "No logs yet.";
-            return;
-          }
-
-          data.slice(0, 10).forEach(entry => {
-            const div = document.createElement("div");
-            div.className = "log-entry";
-            const time = new Date(entry.timestamp).toLocaleString();
-            div.innerHTML = `
-              <strong>${entry.student_id}</strong> – ${entry.med_code}<br />
-              <span class="timestamp">${time}</span>
-            `;
-            container.appendChild(div);
-          });
-        })
-        .catch(err => {
-          document.getElementById("live-log").textContent = "Error loading logs.";
-        });
-    }
-
-    loadLiveLog();
-    setInterval(loadLiveLog, 10000); // Refresh every 10 seconds
-  </script>
+<h1 style="margin: 0.0px 0.0px 16.1px 0.0px; font: 24.0px Helvetica; color: #262626; -webkit-text-stroke: #262626"><span class="s1"><b>Scan Student ID and Medication</b></span></h1>
+<h1 style="margin: 0.0px 0.0px 16.1px 0.0px; font: 24.0px Helvetica; color: #262626; -webkit-text-stroke: #262626"><span class="s1"><b>&lt;label&gt;Nurse Name: &lt;input type="text" id="nurseName" required&gt;&lt;/label&gt;&lt;br&gt;&lt;br&gt;</b></span></h1>
+<h1 style="margin: 0.0px 0.0px 16.1px 0.0px; font: 24.0px Helvetica; color: #262626; -webkit-text-stroke: #262626"><span class="s1"><b>Shift ID: &lt;input type="text" id="shiftId" required&gt;&lt;br&gt;&lt;br&gt;</b></span></h1>
+<h1 style="margin: 0.0px 0.0px 16.1px 0.0px; font: 24.0px Helvetica; color: #262626; -webkit-text-stroke: #262626"><span class="s1"><b>Student ID:</b></span></h1>
+<h1 style="margin: 0.0px 0.0px 16.1px 0.0px; font: 24.0px Helvetica; color: #262626; -webkit-text-stroke: #262626"><span class="s1"><b>Medication Barcode:</b></span></h1>
+<h1 style="margin: 0.0px 0.0px 16.1px 0.0px; font: 24.0px Helvetica; color: #262626; -webkit-text-stroke: #262626"><span class="s1"><b>Log Administration</b></span></h1>
+<h1 style="margin: 0.0px 0.0px 16.1px 0.0px; font: 24.0px Helvetica; color: #262626; -webkit-text-stroke: #262626"><span class="s1"><b>&lt;h2&gt;Live Medication Log&lt;/h2&gt;</b></span></h1>
+<h1 style="margin: 0.0px 0.0px 16.1px 0.0px; font: 24.0px Helvetica; color: #262626; -webkit-text-stroke: #262626"><span class="s1"><b>&lt;div id="live-log"&gt;Loading logs...&lt;/div&gt;</b></span></h1>
+<h1 style="margin: 0.0px 0.0px 16.1px 0.0px; font: 24.0px Helvetica; color: #262626; -webkit-text-stroke: #262626"><span class="s1"><b>&lt;button id="complete-btn"&gt;✅ Complete Med Pass &amp; Download CSV&lt;/button&gt;</b></span></h1>
+<h1 style="margin: 0.0px 0.0px 16.1px 0.0px; font: 24.0px Helvetica; color: #262626; -webkit-text-stroke: #262626; min-height: 29.0px"><span class="s1"><b></b></span><br></h1>
+<h1 style="margin: 0.0px 0.0px 16.1px 0.0px; font: 24.0px Helvetica; color: #262626; -webkit-text-stroke: #262626"><span class="s1"><b>&lt;script&gt;</b></span></h1>
+<h1 style="margin: 0.0px 0.0px 16.1px 0.0px; font: 24.0px Helvetica; color: #262626; -webkit-text-stroke: #262626"><span class="s1"><b><span class="Apple-converted-space">  </span>// Persist nurse name in localStorage</b></span></h1>
+<h1 style="margin: 0.0px 0.0px 16.1px 0.0px; font: 24.0px Helvetica; color: #262626; -webkit-text-stroke: #262626"><span class="s1"><b><span class="Apple-converted-space">  </span>const nurseInput = document.getElementById("nurseName");</b></span></h1>
+<h1 style="margin: 0.0px 0.0px 16.1px 0.0px; font: 24.0px Helvetica; color: #262626; -webkit-text-stroke: #262626"><span class="s1"><b><span class="Apple-converted-space">  </span>nurseInput.value = localStorage.getItem("nurseName") || "";</b></span></h1>
+<h1 style="margin: 0.0px 0.0px 16.1px 0.0px; font: 24.0px Helvetica; color: #262626; -webkit-text-stroke: #262626"><span class="s1"><b><span class="Apple-converted-space">  </span>nurseInput.addEventListener("input", () =&gt; {</b></span></h1>
+<h1 style="margin: 0.0px 0.0px 16.1px 0.0px; font: 24.0px Helvetica; color: #262626; -webkit-text-stroke: #262626"><span class="s1"><b><span class="Apple-converted-space">    </span>localStorage.setItem("nurseName", nurseInput.value);</b></span></h1>
+<h1 style="margin: 0.0px 0.0px 16.1px 0.0px; font: 24.0px Helvetica; color: #262626; -webkit-text-stroke: #262626"><span class="s1"><b><span class="Apple-converted-space">  </span>});</b></span></h1>
+<h1 style="margin: 0.0px 0.0px 16.1px 0.0px; font: 24.0px Helvetica; color: #262626; -webkit-text-stroke: #262626"><span class="s1"><b>&lt;/script&gt;</b></span></h1>
+<h1 style="margin: 0.0px 0.0px 16.1px 0.0px; font: 24.0px Helvetica; color: #262626; -webkit-text-stroke: #262626"><span class="s1"><b>&lt;script&gt;</b></span></h1>
+<h1 style="margin: 0.0px 0.0px 16.1px 0.0px; font: 24.0px Helvetica; color: #262626; -webkit-text-stroke: #262626"><span class="s1"><b><span class="Apple-converted-space">  </span>function loadLiveLog() {</b></span></h1>
+<h1 style="margin: 0.0px 0.0px 16.1px 0.0px; font: 24.0px Helvetica; color: #262626; -webkit-text-stroke: #262626"><span class="s1"><b><span class="Apple-converted-space">    </span>fetch("/logs")</b></span></h1>
+<h1 style="margin: 0.0px 0.0px 16.1px 0.0px; font: 24.0px Helvetica; color: #262626; -webkit-text-stroke: #262626"><span class="s1"><b><span class="Apple-converted-space">      </span>.then(res =&gt; res.json())</b></span></h1>
+<h1 style="margin: 0.0px 0.0px 16.1px 0.0px; font: 24.0px Helvetica; color: #262626; -webkit-text-stroke: #262626"><span class="s1"><b><span class="Apple-converted-space">      </span>.then(data =&gt; {</b></span></h1>
+<h1 style="margin: 0.0px 0.0px 16.1px 0.0px; font: 24.0px Helvetica; color: #262626; -webkit-text-stroke: #262626"><span class="s1"><b><span class="Apple-converted-space">        </span>const container = document.getElementById("live-log");</b></span></h1>
+<h1 style="margin: 0.0px 0.0px 16.1px 0.0px; font: 24.0px Helvetica; color: #262626; -webkit-text-stroke: #262626"><span class="s1"><b><span class="Apple-converted-space">        </span>container.innerHTML = "";</b></span></h1>
+<h1 style="margin: 0.0px 0.0px 16.1px 0.0px; font: 24.0px Helvetica; color: #262626; -webkit-text-stroke: #262626; min-height: 29.0px"><span class="s1"><b></b></span><br></h1>
+<h1 style="margin: 0.0px 0.0px 16.1px 0.0px; font: 24.0px Helvetica; color: #262626; -webkit-text-stroke: #262626"><span class="s1"><b><span class="Apple-converted-space">        </span>if (!data.length) {</b></span></h1>
+<h1 style="margin: 0.0px 0.0px 16.1px 0.0px; font: 24.0px Helvetica; color: #262626; -webkit-text-stroke: #262626"><span class="s1"><b><span class="Apple-converted-space">          </span>container.textContent = "No logs yet.";</b></span></h1>
+<h1 style="margin: 0.0px 0.0px 16.1px 0.0px; font: 24.0px Helvetica; color: #262626; -webkit-text-stroke: #262626"><span class="s1"><b><span class="Apple-converted-space">          </span>return;</b></span></h1>
+<h1 style="margin: 0.0px 0.0px 16.1px 0.0px; font: 24.0px Helvetica; color: #262626; -webkit-text-stroke: #262626"><span class="s1"><b><span class="Apple-converted-space">        </span>}</b></span></h1>
+<h1 style="margin: 0.0px 0.0px 16.1px 0.0px; font: 24.0px Helvetica; color: #262626; -webkit-text-stroke: #262626; min-height: 29.0px"><span class="s1"><b></b></span><br></h1>
+<h1 style="margin: 0.0px 0.0px 16.1px 0.0px; font: 24.0px Helvetica; color: #262626; -webkit-text-stroke: #262626"><span class="s1"><b><span class="Apple-converted-space">        </span>data.slice(0, 10).forEach(entry =&gt; {</b></span></h1>
+<h1 style="margin: 0.0px 0.0px 16.1px 0.0px; font: 24.0px Helvetica; color: #262626; -webkit-text-stroke: #262626"><span class="s1"><b><span class="Apple-converted-space">          </span>const div = document.createElement("div");</b></span></h1>
+<h1 style="margin: 0.0px 0.0px 16.1px 0.0px; font: 24.0px Helvetica; color: #262626; -webkit-text-stroke: #262626"><span class="s1"><b><span class="Apple-converted-space">          </span>const time = new Date(entry.timestamp).toLocaleString();</b></span></h1>
+<h1 style="margin: 0.0px 0.0px 16.1px 0.0px; font: 24.0px Helvetica; color: #262626; -webkit-text-stroke: #262626"><span class="s1"><b><span class="Apple-converted-space">          </span>div.innerHTML = `&lt;strong&gt;${entry.student_id}&lt;/strong&gt; – ${entry.med_code} &lt;span style="color:gray;"&gt;@ ${time}&lt;/span&gt;`;</b></span></h1>
+<h1 style="margin: 0.0px 0.0px 16.1px 0.0px; font: 24.0px Helvetica; color: #262626; -webkit-text-stroke: #262626"><span class="s1"><b><span class="Apple-converted-space">          </span>container.appendChild(div);</b></span></h1>
+<h1 style="margin: 0.0px 0.0px 16.1px 0.0px; font: 24.0px Helvetica; color: #262626; -webkit-text-stroke: #262626"><span class="s1"><b><span class="Apple-converted-space">        </span>});</b></span></h1>
+<h1 style="margin: 0.0px 0.0px 16.1px 0.0px; font: 24.0px Helvetica; color: #262626; -webkit-text-stroke: #262626"><span class="s1"><b><span class="Apple-converted-space">      </span>})</b></span></h1>
+<h1 style="margin: 0.0px 0.0px 16.1px 0.0px; font: 24.0px Helvetica; color: #262626; -webkit-text-stroke: #262626"><span class="s1"><b><span class="Apple-converted-space">      </span>.catch(err =&gt; {</b></span></h1>
+<h1 style="margin: 0.0px 0.0px 16.1px 0.0px; font: 24.0px Helvetica; color: #262626; -webkit-text-stroke: #262626"><span class="s1"><b><span class="Apple-converted-space">        </span>document.getElementById("live-log").textContent = "Error loading logs.";</b></span></h1>
+<h1 style="margin: 0.0px 0.0px 16.1px 0.0px; font: 24.0px Helvetica; color: #262626; -webkit-text-stroke: #262626"><span class="s1"><b><span class="Apple-converted-space">      </span>});</b></span></h1>
+<h1 style="margin: 0.0px 0.0px 16.1px 0.0px; font: 24.0px Helvetica; color: #262626; -webkit-text-stroke: #262626"><span class="s1"><b><span class="Apple-converted-space">  </span>}</b></span></h1>
+<h1 style="margin: 0.0px 0.0px 16.1px 0.0px; font: 24.0px Helvetica; color: #262626; -webkit-text-stroke: #262626; min-height: 29.0px"><span class="s1"><b></b></span><br></h1>
+<h1 style="margin: 0.0px 0.0px 16.1px 0.0px; font: 24.0px Helvetica; color: #262626; -webkit-text-stroke: #262626"><span class="s1"><b><span class="Apple-converted-space">  </span>loadLiveLog();</b></span></h1>
+<h1 style="margin: 0.0px 0.0px 16.1px 0.0px; font: 24.0px Helvetica; color: #262626; -webkit-text-stroke: #262626"><span class="s1"><b><span class="Apple-converted-space">  </span>setInterval(loadLiveLog, 10000);</b></span></h1>
+<h1 style="margin: 0.0px 0.0px 16.1px 0.0px; font: 24.0px Helvetica; color: #262626; -webkit-text-stroke: #262626; min-height: 29.0px"><span class="s1"><b></b></span><br></h1>
+<h1 style="margin: 0.0px 0.0px 16.1px 0.0px; font: 24.0px Helvetica; color: #262626; -webkit-text-stroke: #262626"><span class="s1"><b><span class="Apple-converted-space">  </span>document.getElementById("complete-btn").addEventListener("click", function () {</b></span></h1>
+<h1 style="margin: 0.0px 0.0px 16.1px 0.0px; font: 24.0px Helvetica; color: #262626; -webkit-text-stroke: #262626"><span class="s1"><b><span class="Apple-converted-space">    </span>if (!confirm("Are you sure you want to complete the med pass and download the log?")) return;</b></span></h1>
+<h1 style="margin: 0.0px 0.0px 16.1px 0.0px; font: 24.0px Helvetica; color: #262626; -webkit-text-stroke: #262626; min-height: 29.0px"><span class="s1"><b></b></span><br></h1>
+<h1 style="margin: 0.0px 0.0px 16.1px 0.0px; font: 24.0px Helvetica; color: #262626; -webkit-text-stroke: #262626"><span class="s1"><b><span class="Apple-converted-space">    </span>fetch("/complete-pass")</b></span></h1>
+<h1 style="margin: 0.0px 0.0px 16.1px 0.0px; font: 24.0px Helvetica; color: #262626; -webkit-text-stroke: #262626"><span class="s1"><b><span class="Apple-converted-space">      </span>.then(res =&gt; res.json())</b></span></h1>
+<h1 style="margin: 0.0px 0.0px 16.1px 0.0px; font: 24.0px Helvetica; color: #262626; -webkit-text-stroke: #262626"><span class="s1"><b><span class="Apple-converted-space">      </span>.then(data =&gt; {</b></span></h1>
+<h1 style="margin: 0.0px 0.0px 16.1px 0.0px; font: 24.0px Helvetica; color: #262626; -webkit-text-stroke: #262626"><span class="s1"><b><span class="Apple-converted-space">        </span>if (!data.length) {</b></span></h1>
+<h1 style="margin: 0.0px 0.0px 16.1px 0.0px; font: 24.0px Helvetica; color: #262626; -webkit-text-stroke: #262626"><span class="s1"><b><span class="Apple-converted-space">          </span>alert("No data to export.");</b></span></h1>
+<h1 style="margin: 0.0px 0.0px 16.1px 0.0px; font: 24.0px Helvetica; color: #262626; -webkit-text-stroke: #262626"><span class="s1"><b><span class="Apple-converted-space">          </span>return;</b></span></h1>
+<h1 style="margin: 0.0px 0.0px 16.1px 0.0px; font: 24.0px Helvetica; color: #262626; -webkit-text-stroke: #262626"><span class="s1"><b><span class="Apple-converted-space">        </span>}</b></span></h1>
+<h1 style="margin: 0.0px 0.0px 16.1px 0.0px; font: 24.0px Helvetica; color: #262626; -webkit-text-stroke: #262626; min-height: 29.0px"><span class="s1"><b></b></span><br></h1>
+<h1 style="margin: 0.0px 0.0px 16.1px 0.0px; font: 24.0px Helvetica; color: #262626; -webkit-text-stroke: #262626"><span class="s1"><b><span class="Apple-converted-space">        </span>const nurseName = document.getElementById("nurseName").value || "Unknown Nurse";</b></span></h1>
+<h1 style="margin: 0.0px 0.0px 16.1px 0.0px; font: 24.0px Helvetica; color: #262626; -webkit-text-stroke: #262626"><span class="s1"><b><span class="Apple-converted-space">        </span>const shiftId = document.getElementById("shiftId").value || "No Shift ID";</b></span></h1>
+<h1 style="margin: 0.0px 0.0px 16.1px 0.0px; font: 24.0px Helvetica; color: #262626; -webkit-text-stroke: #262626"><span class="s1"><b><span class="Apple-converted-space">        </span>const today = new Date().toISOString().slice(0, 10);</b></span></h1>
+<h1 style="margin: 0.0px 0.0px 16.1px 0.0px; font: 24.0px Helvetica; color: #262626; -webkit-text-stroke: #262626"><span class="s1"><b><span class="Apple-converted-space">        </span>const csvHeader = `Nurse Name: ${nurseName}\nShift ID: ${shiftId}\nExport Date: ${today}\n\nStudent ID,Medication Code,Timestamp\n`;</b></span></h1>
+<h1 style="margin: 0.0px 0.0px 16.1px 0.0px; font: 24.0px Helvetica; color: #262626; -webkit-text-stroke: #262626"><span class="s1"><b><span class="Apple-converted-space">        </span>const csvRows = data.map(row =&gt;</b></span></h1>
+<h1 style="margin: 0.0px 0.0px 16.1px 0.0px; font: 24.0px Helvetica; color: #262626; -webkit-text-stroke: #262626"><span class="s1"><b><span class="Apple-converted-space">          </span>`"${row.student_id}","${row.med_code}","${new Date(row.timestamp).toLocaleString()}"`</b></span></h1>
+<h1 style="margin: 0.0px 0.0px 16.1px 0.0px; font: 24.0px Helvetica; color: #262626; -webkit-text-stroke: #262626"><span class="s1"><b><span class="Apple-converted-space">        </span>);</b></span></h1>
+<h1 style="margin: 0.0px 0.0px 16.1px 0.0px; font: 24.0px Helvetica; color: #262626; -webkit-text-stroke: #262626"><span class="s1"><b><span class="Apple-converted-space">        </span>const csvContent = csvHeader + csvRows.join("\n");</b></span></h1>
+<h1 style="margin: 0.0px 0.0px 16.1px 0.0px; font: 24.0px Helvetica; color: #262626; -webkit-text-stroke: #262626; min-height: 29.0px"><span class="s1"><b></b></span><br></h1>
+<h1 style="margin: 0.0px 0.0px 16.1px 0.0px; font: 24.0px Helvetica; color: #262626; -webkit-text-stroke: #262626"><span class="s1"><b><span class="Apple-converted-space">        </span>const blob = new Blob([csvContent], { type: "text/csv" });</b></span></h1>
+<h1 style="margin: 0.0px 0.0px 16.1px 0.0px; font: 24.0px Helvetica; color: #262626; -webkit-text-stroke: #262626"><span class="s1"><b><span class="Apple-converted-space">        </span>const url = URL.createObjectURL(blob);</b></span></h1>
+<h1 style="margin: 0.0px 0.0px 16.1px 0.0px; font: 24.0px Helvetica; color: #262626; -webkit-text-stroke: #262626; min-height: 29.0px"><span class="s1"><b></b></span><br></h1>
+<h1 style="margin: 0.0px 0.0px 16.1px 0.0px; font: 24.0px Helvetica; color: #262626; -webkit-text-stroke: #262626"><span class="s1"><b><span class="Apple-converted-space">        </span>const a = document.createElement("a");</b></span></h1>
+<h1 style="margin: 0.0px 0.0px 16.1px 0.0px; font: 24.0px Helvetica; color: #262626; -webkit-text-stroke: #262626"><span class="s1"><b><span class="Apple-converted-space">        </span>a.href = url;</b></span></h1>
+<h1 style="margin: 0.0px 0.0px 16.1px 0.0px; font: 24.0px Helvetica; color: #262626; -webkit-text-stroke: #262626"><span class="s1"><b><span class="Apple-converted-space">        </span>a.download = `med-pass-${today}.csv`;</b></span></h1>
+<h1 style="margin: 0.0px 0.0px 16.1px 0.0px; font: 24.0px Helvetica; color: #262626; -webkit-text-stroke: #262626"><span class="s1"><b><span class="Apple-converted-space">        </span>document.body.appendChild(a);</b></span></h1>
+<h1 style="margin: 0.0px 0.0px 16.1px 0.0px; font: 24.0px Helvetica; color: #262626; -webkit-text-stroke: #262626"><span class="s1"><b><span class="Apple-converted-space">        </span>a.click();</b></span></h1>
+<h1 style="margin: 0.0px 0.0px 16.1px 0.0px; font: 24.0px Helvetica; color: #262626; -webkit-text-stroke: #262626"><span class="s1"><b><span class="Apple-converted-space">        </span>document.body.removeChild(a);</b></span></h1>
+<h1 style="margin: 0.0px 0.0px 16.1px 0.0px; font: 24.0px Helvetica; color: #262626; -webkit-text-stroke: #262626; min-height: 29.0px"><span class="s1"><b></b></span><br></h1>
+<h1 style="margin: 0.0px 0.0px 16.1px 0.0px; font: 24.0px Helvetica; color: #262626; -webkit-text-stroke: #262626"><span class="s1"><b><span class="Apple-converted-space">        </span>setTimeout(() =&gt; {</b></span></h1>
+<h1 style="margin: 0.0px 0.0px 16.1px 0.0px; font: 24.0px Helvetica; color: #262626; -webkit-text-stroke: #262626"><span class="s1"><b><span class="Apple-converted-space">          </span>window.location.href = "/";</b></span></h1>
+<h1 style="margin: 0.0px 0.0px 16.1px 0.0px; font: 24.0px Helvetica; color: #262626; -webkit-text-stroke: #262626"><span class="s1"><b><span class="Apple-converted-space">        </span>}, 1000);</b></span></h1>
+<h1 style="margin: 0.0px 0.0px 16.1px 0.0px; font: 24.0px Helvetica; color: #262626; -webkit-text-stroke: #262626"><span class="s1"><b><span class="Apple-converted-space">      </span>})</b></span></h1>
+<h1 style="margin: 0.0px 0.0px 16.1px 0.0px; font: 24.0px Helvetica; color: #262626; -webkit-text-stroke: #262626"><span class="s1"><b><span class="Apple-converted-space">      </span>.catch(err =&gt; {</b></span></h1>
+<h1 style="margin: 0.0px 0.0px 16.1px 0.0px; font: 24.0px Helvetica; color: #262626; -webkit-text-stroke: #262626"><span class="s1"><b><span class="Apple-converted-space">        </span>alert("Failed to complete med pass: " + err.message);</b></span></h1>
+<h1 style="margin: 0.0px 0.0px 16.1px 0.0px; font: 24.0px Helvetica; color: #262626; -webkit-text-stroke: #262626"><span class="s1"><b><span class="Apple-converted-space">      </span>});</b></span></h1>
+<h1 style="margin: 0.0px 0.0px 16.1px 0.0px; font: 24.0px Helvetica; color: #262626; -webkit-text-stroke: #262626"><span class="s1"><b><span class="Apple-converted-space">  </span>});</b></span></h1>
+<h1 style="margin: 0.0px 0.0px 16.1px 0.0px; font: 24.0px Helvetica; color: #262626; -webkit-text-stroke: #262626"><span class="s1"><b>&lt;/script&gt;</b></span></h1>
 </body>
 </html>
