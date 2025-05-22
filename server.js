@@ -1,4 +1,4 @@
- const express = require("express");
+const express = require("express");
 const cors = require("cors");
 const { Pool } = require("pg");
 require("dotenv").config();
@@ -53,10 +53,10 @@ app.get("/logs", async (req, res) => {
     res.status(500).json({ error: err.message });
   }
 });
-app.listen(port, () => {
-  console.log("THIS IS THE CORRECT SERVER FILE");
-  console.log(`Server running on port ${port}`);
-});
+
+// Log the environment and start the server
+console.log("RAILWAY PORT ENV:", process.env.PORT);
+
 app.listen(port, () => {
   console.log("🚨 This is the real server.js from George's Mac");
   console.log(`Server running on port ${port}`);
