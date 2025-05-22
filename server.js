@@ -54,4 +54,5 @@ app.get("/logs", async (req, res) => {
   }
 });
 
+app.listen(port, () => console.log("THIS IS THE CORRECT SERVER FILE");
 app.listen(port, () => console.log(`Server running on port ${port}`));
