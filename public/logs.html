@@ -1,80 +1,86 @@
-<!DOCTYPE html>
-<html lang="en">
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
+<html>
 <head>
-  <meta charset="UTF-8" />
-  <title>Logged Medications</title>
-  <style>
-    table {
-      border-collapse: collapse;
-      width: 100%;
-      margin-top: 20px;
-    }
-    th, td {
-      border: 1px solid #ccc;
-      padding: 8px;
-      text-align: left;
-    }
-    th {
-      background: #f5f5f5;
-    }
-    button {
-      margin-top: 20px;
-    }
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+  <meta http-equiv="Content-Style-Type" content="text/css">
+  <title></title>
+  <meta name="Generator" content="Cocoa HTML Writer">
+  <meta name="CocoaVersion" content="2575.6">
+  <style type="text/css">
+    p.p1 {margin: 0.0px 0.0px 0.0px 0.0px; font: 12.0px Helvetica}
+    p.p2 {margin: 0.0px 0.0px 0.0px 0.0px; font: 12.0px Helvetica; min-height: 14.0px}
   </style>
 </head>
 <body>
-  <h2>Medication Administration Logs</h2>
-  <button onclick="downloadCSV()">Download CSV</button>
-
-  <table id="logTable">
-    <thead>
-      <tr>
-        <th>ID</th>
-        <th>Student ID</th>
-        <th>Med Code</th>
-        <th>Timestamp</th>
-      </tr>
-    </thead>
-    <tbody></tbody>
-  </table>
-
-  <script>
-    async function loadLogs() {
-      const response = await fetch("/logs");
-      const logs = await response.json();
-      const table = document.querySelector("#logTable tbody");
-
-      logs.forEach(log => {
-        const row = document.createElement("tr");
-        row.innerHTML = `
-          <td>${log.id}</td>
-          <td>${log.student_id}</td>
-          <td>${log.med_code}</td>
-          <td>${new Date(log.timestamp).toLocaleString()}</td>
-        `;
-        table.appendChild(row);
-      });
-    }
-
-    function downloadCSV() {
-      const rows = [["ID", "Student ID", "Med Code", "Timestamp"]];
-      document.querySelectorAll("#logTable tbody tr").forEach(tr => {
-        const row = Array.from(tr.children).map(td => td.textContent);
-        rows.push(row);
-      });
-
-      const csvContent = rows.map(r => r.join(",")).join("\n");
-      const blob = new Blob([csvContent], { type: "text/csv;charset=utf-8;" });
-      const link = document.createElement("a");
-      link.setAttribute("href", URL.createObjectURL(blob));
-      link.setAttribute("download", "medication-logs.csv");
-      link.style.display = "none";
-      document.body.appendChild(link);
-      link.click();
-      document.body.removeChild(link);
-    }
-
-    loadLogs();
-  </script>
+<p class="p1">&lt;!DOCTYPE html&gt;</p>
+<p class="p1">&lt;html lang="en"&gt;</p>
+<p class="p1">&lt;head&gt;</p>
+<p class="p1"><span class="Apple-converted-space">  </span>&lt;meta charset="UTF-8" /&gt;</p>
+<p class="p1"><span class="Apple-converted-space">  </span>&lt;meta name="viewport" content="width=device-width, initial-scale=1.0" /&gt;</p>
+<p class="p1"><span class="Apple-converted-space">  </span>&lt;title&gt;Medication Administration Log&lt;/title&gt;</p>
+<p class="p1"><span class="Apple-converted-space">  </span>&lt;style&gt;</p>
+<p class="p1"><span class="Apple-converted-space">    </span>body {</p>
+<p class="p1"><span class="Apple-converted-space">      </span>font-family: sans-serif;</p>
+<p class="p1"><span class="Apple-converted-space">      </span>background-color: #f9f9f9;</p>
+<p class="p1"><span class="Apple-converted-space">      </span>padding: 2rem;</p>
+<p class="p1"><span class="Apple-converted-space">    </span>}</p>
+<p class="p1"><span class="Apple-converted-space">    </span>h1 {</p>
+<p class="p1"><span class="Apple-converted-space">      </span>color: #333;</p>
+<p class="p1"><span class="Apple-converted-space">    </span>}</p>
+<p class="p1"><span class="Apple-converted-space">    </span>.log-entry {</p>
+<p class="p1"><span class="Apple-converted-space">      </span>background: #fff;</p>
+<p class="p1"><span class="Apple-converted-space">      </span>border: 1px solid #ddd;</p>
+<p class="p1"><span class="Apple-converted-space">      </span>padding: 1rem;</p>
+<p class="p1"><span class="Apple-converted-space">      </span>margin-bottom: 0.5rem;</p>
+<p class="p1"><span class="Apple-converted-space">      </span>border-radius: 4px;</p>
+<p class="p1"><span class="Apple-converted-space">    </span>}</p>
+<p class="p1"><span class="Apple-converted-space">    </span>.timestamp {</p>
+<p class="p1"><span class="Apple-converted-space">      </span>font-size: 0.9em;</p>
+<p class="p1"><span class="Apple-converted-space">      </span>color: #666;</p>
+<p class="p1"><span class="Apple-converted-space">    </span>}</p>
+<p class="p1"><span class="Apple-converted-space">  </span>&lt;/style&gt;</p>
+<p class="p1">&lt;/head&gt;</p>
+<p class="p1">&lt;body&gt;</p>
+<p class="p1"><span class="Apple-converted-space">  </span>&lt;h1&gt;Medication Administration Log&lt;/h1&gt;</p>
+<p class="p1"><span class="Apple-converted-space">  </span>&lt;div id="logs"&gt;Loading logs...&lt;/div&gt;</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">  </span>&lt;script&gt;</p>
+<p class="p1"><span class="Apple-converted-space">    </span>function loadLogs() {</p>
+<p class="p1"><span class="Apple-converted-space">      </span>fetch("/logs")</p>
+<p class="p1"><span class="Apple-converted-space">        </span>.then(response =&gt; response.json())</p>
+<p class="p1"><span class="Apple-converted-space">        </span>.then(data =&gt; {</p>
+<p class="p1"><span class="Apple-converted-space">          </span>const container = document.getElementById("logs");</p>
+<p class="p1"><span class="Apple-converted-space">          </span>container.innerHTML = "";</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">          </span>if (data.length === 0) {</p>
+<p class="p1"><span class="Apple-converted-space">            </span>container.textContent = "No logs found.";</p>
+<p class="p1"><span class="Apple-converted-space">            </span>return;</p>
+<p class="p1"><span class="Apple-converted-space">          </span>}</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">          </span>data.forEach(entry =&gt; {</p>
+<p class="p1"><span class="Apple-converted-space">            </span>const div = document.createElement("div");</p>
+<p class="p1"><span class="Apple-converted-space">            </span>div.className = "log-entry";</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">            </span>const timestamp = new Date(entry.timestamp).toLocaleString();</p>
+<p class="p1"><span class="Apple-converted-space">            </span>div.innerHTML = `</p>
+<p class="p1"><span class="Apple-converted-space">              </span>&lt;div&gt;&lt;strong&gt;Student ID:&lt;/strong&gt; ${entry.student_id}&lt;/div&gt;</p>
+<p class="p1"><span class="Apple-converted-space">              </span>&lt;div&gt;&lt;strong&gt;Medication Code:&lt;/strong&gt; ${entry.med_code}&lt;/div&gt;</p>
+<p class="p1"><span class="Apple-converted-space">              </span>&lt;div class="timestamp"&gt;${timestamp}&lt;/div&gt;</p>
+<p class="p1"><span class="Apple-converted-space">            </span>`;</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">            </span>container.appendChild(div);</p>
+<p class="p1"><span class="Apple-converted-space">          </span>});</p>
+<p class="p1"><span class="Apple-converted-space">        </span>})</p>
+<p class="p1"><span class="Apple-converted-space">        </span>.catch(err =&gt; {</p>
+<p class="p1"><span class="Apple-converted-space">          </span>document.getElementById("logs").textContent =</p>
+<p class="p1"><span class="Apple-converted-space">            </span>"Failed to load logs: " + err.message;</p>
+<p class="p1"><span class="Apple-converted-space">        </span>});</p>
+<p class="p1"><span class="Apple-converted-space">    </span>}</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">    </span>loadLogs();</p>
+<p class="p1"><span class="Apple-converted-space">    </span>setInterval(loadLogs, 15000); // refresh every 15 seconds</p>
+<p class="p1"><span class="Apple-converted-space">  </span>&lt;/script&gt;</p>
+<p class="p1">&lt;/body&gt;</p>
+<p class="p1">&lt;/html&gt;</p>
 </body>
 </html>
