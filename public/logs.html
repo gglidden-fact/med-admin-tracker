@@ -17,10 +17,15 @@
     th {
       background: #f5f5f5;
     }
+    button {
+      margin-top: 20px;
+    }
   </style>
 </head>
 <body>
   <h2>Medication Administration Logs</h2>
+  <button onclick="downloadCSV()">Download CSV</button>
+
   <table id="logTable">
     <thead>
       <tr>
@@ -49,6 +54,24 @@
         `;
         table.appendChild(row);
       });
+    }
+
+    function downloadCSV() {
+      const rows = [["ID", "Student ID", "Med Code", "Timestamp"]];
+      document.querySelectorAll("#logTable tbody tr").forEach(tr => {
+        const row = Array.from(tr.children).map(td => td.textContent);
+        rows.push(row);
+      });
+
+      const csvContent = rows.map(r => r.join(",")).join("\n");
+      const blob = new Blob([csvContent], { type: "text/csv;charset=utf-8;" });
+      const link = document.createElement("a");
+      link.setAttribute("href", URL.createObjectURL(blob));
+      link.setAttribute("download", "medication-logs.csv");
+      link.style.display = "none";
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
     }
 
     loadLogs();
