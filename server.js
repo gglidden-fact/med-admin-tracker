@@ -53,6 +53,7 @@ app.get("/logs", async (req, res) => {
     res.status(500).json({ error: err.message });
   }
 });
-
-app.listen(port, () => console.log("THIS IS THE CORRECT SERVER FILE");
-app.listen(port, () => console.log(`Server running on port ${port}`));
+app.listen(port, () => {
+  console.log("THIS IS THE CORRECT SERVER FILE");
+  console.log(`Server running on port ${port}`);
+});
