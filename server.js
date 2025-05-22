@@ -54,18 +54,20 @@ app.get("/logs", async (req, res) => {
   }
 });
 
-// Log the environment and start the server
-console.log("RAILWAY PORT ENV:", process.env.PORT);
-
-app.listen(port, () => {
-  console.log("🚨 This is the real server.js from George's Mac");
-  console.log(`Server running on port ${port}`);
-});
-app.get("/logs", async (req, res) => {
+// GET: Complete pass — export + clear logs
+app.get("/complete-pass", async (req, res) => {
   try {
-    const result = await pool.query("SELECT * FROM logs ORDER BY timestamp DESC");
+    const result = await pool.query("SELECT * FROM logs ORDER BY timestamp ASC");
+    await pool.query("DELETE FROM logs"); // clear after sending
     res.json(result.rows);
   } catch (err) {
     res.status(500).json({ error: err.message });
   }
+});
+
+// Log the environment and start the server
+console.log("RAILWAY PORT ENV:", process.env.PORT);
+app.listen(port, () => {
+  console.log("🚨 This is the real server.js from George's Mac");
+  console.log(`Server running on port ${port}`);
 });
