@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Logged Medications</title>
+  <style>
+    table {
+      border-collapse: collapse;
+      width: 100%;
+      margin-top: 20px;
+    }
+    th, td {
+      border: 1px solid #ccc;
+      padding: 8px;
+      text-align: left;
+    }
+    th {
+      background: #f5f5f5;
+    }
+  </style>
+</head>
+<body>
+  <h2>Medication Administration Logs</h2>
+  <table id="logTable">
+    <thead>
+      <tr>
+        <th>ID</th>
+        <th>Student ID</th>
+        <th>Med Code</th>
+        <th>Timestamp</th>
+      </tr>
+    </thead>
+    <tbody></tbody>
+  </table>
+
+  <script>
+    async function loadLogs() {
+      const response = await fetch("/logs");
+      const logs = await response.json();
+      const table = document.querySelector("#logTable tbody");
+
+      logs.forEach(log => {
+        const row = document.createElement("tr");
+        row.innerHTML = `
+          <td>${log.id}</td>
+          <td>${log.student_id}</td>
+          <td>${log.med_code}</td>
+          <td>${new Date(log.timestamp).toLocaleString()}</td>
+        `;
+        table.appendChild(row);
+      });
+    }
+
+    loadLogs();
+  </script>
+</body>
+</html>
