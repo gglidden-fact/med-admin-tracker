@@ -67,6 +67,8 @@ app.get("/logs", async (req, res) => {
     res.status(500).json({ error: err.message });
   }
 });
+
+// GET: Complete med pass — archive logs + clear current
 app.get("/complete-pass", async (req, res) => {
   try {
     const result = await pool.query("SELECT * FROM logs ORDER BY timestamp ASC");
@@ -75,7 +77,6 @@ app.get("/complete-pass", async (req, res) => {
     const nurse = req.query.nurse || "Unknown";
     const shift = req.query.shift || "Unspecified";
 
-    // Archive the data before deleting
     const insertPromises = logs.map(entry => {
       return pool.query(
         `INSERT INTO pass_history (student_id, med_code, timestamp, nurse_name, shift_id)
@@ -93,7 +94,7 @@ app.get("/complete-pass", async (req, res) => {
   }
 });
 
-// GET: Fetch archived med passes
+// GET: View history of all passes
 app.get("/history", async (req, res) => {
   try {
     const result = await pool.query(
@@ -105,12 +106,12 @@ app.get("/history", async (req, res) => {
   }
 });
 
-// Serve index.html at root URL
+// Serve index.html on root URL
 app.get("/", (req, res) => {
   res.sendFile(path.join(__dirname, "public", "index.html"));
 });
 
-// Log the environment and start the server
+// Start server
 console.log("RAILWAY PORT ENV:", process.env.PORT);
 app.listen(port, () => {
   console.log("🚨 This is the real server.js from George's Mac");
