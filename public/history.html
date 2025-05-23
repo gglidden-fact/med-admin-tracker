@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Archived Med Passes</title>
+  <style>
+    body {
+      font-family: sans-serif;
+      max-width: 800px;
+      margin: auto;
+      padding: 2rem;
+      background-color: #f9f9f9;
+    }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 1rem;
+    }
+    th, td {
+      border: 1px solid #ccc;
+      padding: 0.5rem;
+      text-align: left;
+    }
+    th {
+      background-color: #eaeaea;
+    }
+    h1 {
+      margin-bottom: 0.5rem;
+    }
+  </style>
+</head>
+<body>
+  <h1>Archived Med Pass History</h1>
+  <table>
+    <thead>
+      <tr>
+        <th>Student ID</th>
+        <th>Med Code</th>
+        <th>Timestamp</th>
+        <th>Nurse Name</th>
+        <th>Shift ID</th>
+        <th>Submitted</th>
+      </tr>
+    </thead>
+    <tbody id="history-body">
+      <tr><td colspan="6">Loading...</td></tr>
+    </tbody>
+  </table>
+
+  <script>
+    fetch("/history")
+      .then(res => res.json())
+      .then(data => {
+        const tbody = document.getElementById("history-body");
+        tbody.innerHTML = "";
+
+        if (!data.length) {
+          tbody.innerHTML = "<tr><td colspan='6'>No archived passes found.</td></tr>";
+          return;
+        }
+
+        data.forEach(entry => {
+          const row = document.createElement("tr");
+          row.innerHTML = `
+            <td>${entry.student_id}</td>
+            <td>${entry.med_code}</td>
+            <td>${new Date(entry.timestamp).toLocaleString()}</td>
+            <td>${entry.nurse_name}</td>
+            <td>${entry.shift_id}</td>
+            <td>${new Date(entry.pass_submitted).toLocaleString()}</td>
+          `;
+          tbody.appendChild(row);
+        });
+      })
+      .catch(err => {
+        document.getElementById("history-body").innerHTML =
+          `<tr><td colspan='6'>Error loading history: ${err.message}</td></tr>`;
+      });
+  </script>
+</body>
+</html>

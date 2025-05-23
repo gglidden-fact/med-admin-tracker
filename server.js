@@ -24,7 +24,20 @@ pool.query(`
     med_code TEXT,
     timestamp TIMESTAMP DEFAULT CURRENT_TIMESTAMP
   );
-`).catch(err => console.error("DB Init Error:", err));
+`).catch(err => console.error("DB Init Error (logs):", err));
+
+// Create the pass_history table if it doesn't exist
+pool.query(`
+  CREATE TABLE IF NOT EXISTS pass_history (
+    id SERIAL PRIMARY KEY,
+    student_id TEXT,
+    med_code TEXT,
+    timestamp TIMESTAMP,
+    nurse_name TEXT,
+    shift_id TEXT,
+    pass_submitted TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+  );
+`).catch(err => console.error("DB Init Error (pass_history):", err));
 
 // POST: Log a medication event
 app.post("/log", async (req, res) => {
@@ -53,13 +66,27 @@ app.get("/logs", async (req, res) => {
     res.status(500).json({ error: err.message });
   }
 });
-
-// GET: Complete pass — export + clear logs
 app.get("/complete-pass", async (req, res) => {
   try {
     const result = await pool.query("SELECT * FROM logs ORDER BY timestamp ASC");
-    await pool.query("DELETE FROM logs"); // clear after sending
-    res.json(result.rows);
+    const logs = result.rows;
+
+    const nurse = req.query.nurse || "Unknown";
+    const shift = req.query.shift || "Unspecified";
+
+    // Archive the data before deleting
+    const insertPromises = logs.map(entry => {
+      return pool.query(
+        `INSERT INTO pass_history (student_id, med_code, timestamp, nurse_name, shift_id)
+         VALUES ($1, $2, $3, $4, $5)`,
+        [entry.student_id, entry.med_code, entry.timestamp, nurse, shift]
+      );
+    });
+
+    await Promise.all(insertPromises);
+    await pool.query("DELETE FROM logs");
+
+    res.json(logs);
   } catch (err) {
     res.status(500).json({ error: err.message });
   }
