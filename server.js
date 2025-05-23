@@ -2,6 +2,8 @@ const path = require("path");
 const express = require("express");
 const cors = require("cors");
 const { Pool } = require("pg");
+const fs = require("fs");
+const { Parser } = require("json2csv");
 require("dotenv").config();
 
 const app = express();
@@ -86,6 +88,22 @@ app.get("/complete-pass", async (req, res) => {
     });
 
     await Promise.all(insertPromises);
+
+    // Save CSV file to /archives folder
+    const archiveDir = path.join(__dirname, "archives");
+    if (!fs.existsSync(archiveDir)) {
+      fs.mkdirSync(archiveDir);
+    }
+
+    const csvFields = ["student_id", "med_code", "timestamp", "control1", "control2", "control3"];
+    const parser = new Parser({ fields: csvFields });
+    const csv = parser.parse(logs);
+
+    const dateTag = new Date().toISOString().replace(/[:.]/g, "-");
+    const filename = `med-pass-${dateTag}.csv`;
+    const filePath = path.join(archiveDir, filename);
+    fs.writeFileSync(filePath, csv);
+
     await pool.query("DELETE FROM logs");
 
     res.json(logs);
