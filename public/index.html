@@ -5,76 +5,50 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Medication Tracker</title>
   <style>
-    :root {
-      --primary-color: #007bff;
-      --background-color: #f0f2f5;
-      --card-color: #ffffff;
-      --border-radius: 8px;
-      --box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
-      --font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-    }
-
     body {
-      font-family: var(--font-family);
-      background-color: var(--background-color);
-      padding: 2rem;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      background-color: #f0f2f5;
       max-width: 600px;
       margin: auto;
+      padding: 2rem;
       color: #333;
     }
-
     h1, h2 {
       text-align: center;
-      color: #222;
     }
-
-    form, .log-entry, .card {
-      background: var(--card-color);
-      border-radius: var(--border-radius);
-      box-shadow: var(--box-shadow);
+    form, .log-entry {
+      background: white;
       padding: 1rem;
-      margin-bottom: 1.5rem;
+      border-radius: 8px;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+      margin-bottom: 1rem;
     }
-
     label {
       font-weight: bold;
       display: block;
       margin-top: 1rem;
     }
-
     input, select {
       width: 100%;
       padding: 0.5rem;
       margin-top: 0.25rem;
-      border: 1px solid #ccc;
       border-radius: 4px;
+      border: 1px solid #ccc;
     }
-
     button {
-      display: inline-block;
       margin-top: 1rem;
       padding: 0.6rem 1.2rem;
-      background: var(--primary-color);
+      background: #007bff;
       color: white;
       border: none;
       border-radius: 4px;
       font-size: 1rem;
-      cursor: pointer;
     }
-
-    button:hover {
-      background: #0056b3;
-    }
-
-    .log-entry {
-      border-left: 4px solid var(--primary-color);
-    }
-
     .timestamp {
       color: #666;
-      font-size: 0.9em;
-      margin-top: 0.25rem;
+      font-size: 0.9rem;
       display: block;
+      margin-top: 0.25rem;
     }
   </style>
 </head>
@@ -87,10 +61,16 @@
   <label>Select Staff:</label>
   <select id="staffDropdown" required>
     <option value="">-- Select a staff member --</option>
-    <option value="George Taylor">George Taylor</option>
-    <option value="Samantha Lee">Samantha Lee</option>
-    <option value="Marcus Grant">Marcus Grant</option>
-    <option value="Olivia Chen">Olivia Chen</option>
+    <option value="George Glidden (NP|Director)">George Glidden (NP|Director)</option>
+    <option value="Jennifer Spencer (RN)">Jennifer Spencer (RN)</option>
+    <option value="Angie Oakes (RN)">Angie Oakes (RN)</option>
+    <option value="Kristelle Caslangen (RN)">Kristelle Caslangen (RN)</option>
+    <option value="Pamela Cote (EMT)">Pamela Cote (EMT)</option>
+    <option value="Administrator-On-Duty">Administrator-On-Duty</option>
+    <option value="BAT On-Duty">BAT On-Duty</option>
+    <option value="Tekayiha Coleman (Beacon College- Summer Programs)">Tekayiha Coleman (Beacon College- Summer Programs)</option>
+    <option value="George Glidden (Beacon College-Summer Programs)">George Glidden (Beacon College-Summer Programs)</option>
+    <option value="Veronica Simpkins (Beacon College-Summer Programs)">Veronica Simpkins (Beacon College-Summer Programs)</option>
   </select>
 
   <form id="med-form">
@@ -108,10 +88,10 @@
   <a href="/history.html"><button type="button">📜 View History</button></a>
 
   <script>
-    // Auto-fill date
+    // Auto-fill today's date
     document.getElementById("adminDate").value = new Date().toISOString().slice(0, 10);
+    document.getElementById("studentId").focus();
 
-    // Log scan
     document.getElementById("med-form").addEventListener("submit", function (e) {
       e.preventDefault();
       const studentId = document.getElementById("studentId").value;
@@ -132,7 +112,7 @@
         return res.json();
       })
       .then(data => {
-        alert("Logged!");
+        alert("Medication logged successfully.");
         loadLiveLog();
         document.getElementById("med-form").reset();
         document.getElementById("studentId").focus();
@@ -140,7 +120,6 @@
       .catch(err => alert("Error: " + err.message));
     });
 
-    // Fetch live logs
     function loadLiveLog() {
       fetch("/logs")
         .then(res => res.json())
@@ -158,7 +137,7 @@
             div.className = "log-entry";
             const time = new Date(entry.timestamp).toLocaleString();
             div.innerHTML = `
-              <strong>${entry.student_id}</strong> – ${entry.med_code}<br />
+              <strong>${entry.student_id}</strong> – ${entry.med_code}
               <span class="timestamp">${time}</span>
             `;
             container.appendChild(div);
@@ -169,11 +148,9 @@
         });
     }
 
-    // Load logs on page load
     loadLiveLog();
     setInterval(loadLiveLog, 10000);
 
-    // Complete med pass
     document.getElementById("complete-btn").addEventListener("click", function () {
       if (!confirm("Are you sure you want to complete the med pass and download the log?")) return;
 
@@ -213,8 +190,6 @@
           alert("Failed to complete med pass: " + err.message);
         });
     });
-
-    document.getElementById("studentId").focus();
   </script>
 </body>
 </html>
