@@ -1,85 +1,228 @@
-Scan Student ID and Medication
-<label>Nurse Name: <input type="text" id="nurseName" required></label><br><br>
-Shift ID: <input type="text" id="shiftId" required><br><br>
-Student ID:
-Medication Barcode:
-Log Administration
-<h2>Live Medication Log</h2>
-<div id="live-log">Loading logs...</div>
-<button id="complete-btn">✅ Complete Med Pass & Download CSV</button>
-
-<script>
-  // Persist nurse name in localStorage
-  const nurseInput = document.getElementById("nurseName");
-  nurseInput.value = localStorage.getItem("nurseName") || "";
-  nurseInput.addEventListener("input", () => {
-    localStorage.setItem("nurseName", nurseInput.value);
-  });
-</script>
-<script>
-  function loadLiveLog() {
-    fetch("/logs")
-      .then(res => res.json())
-      .then(data => {
-        const container = document.getElementById("live-log");
-        container.innerHTML = "";
-
-        if (!data.length) {
-          container.textContent = "No logs yet.";
-          return;
-        }
-
-        data.slice(0, 10).forEach(entry => {
-          const div = document.createElement("div");
-          const time = new Date(entry.timestamp).toLocaleString();
-          div.innerHTML = `<strong>${entry.student_id}</strong> – ${entry.med_code} <span style="color:gray;">@ ${time}</span>`;
-          container.appendChild(div);
-        });
-      })
-      .catch(err => {
-        document.getElementById("live-log").textContent = "Error loading logs.";
-      });
-  }
-
-  loadLiveLog();
-  setInterval(loadLiveLog, 10000);
-
-  document.getElementById("complete-btn").addEventListener("click", function () {
-    if (!confirm("Are you sure you want to complete the med pass and download the log?")) return;
-
-    fetch("/complete-pass")
-      .then(res => res.json())
-      .then(data => {
-        if (!data.length) {
-          alert("No data to export.");
-          return;
-        }
-
-        const nurseName = document.getElementById("nurseName").value || "Unknown Nurse";
-        const shiftId = document.getElementById("shiftId").value || "No Shift ID";
-        const today = new Date().toISOString().slice(0, 10);
-        const csvHeader = `Nurse Name: ${nurseName}\nShift ID: ${shiftId}\nExport Date: ${today}\n\nStudent ID,Medication Code,Timestamp\n`;
-        const csvRows = data.map(row =>
-          `"${row.student_id}","${row.med_code}","${new Date(row.timestamp).toLocaleString()}"`
-        );
-        const csvContent = csvHeader + csvRows.join("\n");
-
-        const blob = new Blob([csvContent], { type: "text/csv" });
-        const url = URL.createObjectURL(blob);
-
-        const a = document.createElement("a");
-        a.href = url;
-        a.download = `med-pass-${today}.csv`;
-        document.body.appendChild(a);
-        a.click();
-        document.body.removeChild(a);
-
-        setTimeout(() => {
-          window.location.href = "/";
-        }, 1000);
-      })
-      .catch(err => {
-        alert("Failed to complete med pass: " + err.message);
-      });
-  });
-</script>
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
+<html>
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+  <meta http-equiv="Content-Style-Type" content="text/css">
+  <title></title>
+  <meta name="Generator" content="Cocoa HTML Writer">
+  <meta name="CocoaVersion" content="2575.6">
+  <style type="text/css">
+    p.p1 {margin: 0.0px 0.0px 0.0px 0.0px; font: 12.0px Times; -webkit-text-stroke: #000000}
+    p.p2 {margin: 0.0px 0.0px 0.0px 0.0px; font: 12.0px Times; -webkit-text-stroke: #000000; min-height: 14.0px}
+    span.s1 {font-kerning: none}
+  </style>
+</head>
+<body>
+<p class="p1"><span class="s1">&lt;!DOCTYPE html&gt;</span></p>
+<p class="p1"><span class="s1">&lt;html lang="en"&gt;</span></p>
+<p class="p1"><span class="s1">&lt;head&gt;</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">  </span>&lt;meta charset="UTF-8" /&gt;</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">  </span>&lt;meta name="viewport" content="width=device-width, initial-scale=1.0" /&gt;</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">  </span>&lt;title&gt;Medication Tracker&lt;/title&gt;</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">  </span>&lt;style&gt;</span></p>
+<p class="p1"><span class="s1">:root {</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">  </span>--primary-color: #007bff;</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">  </span>--background-color: #f0f2f5;</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">  </span>--card-color: #ffffff;</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">  </span>--border-radius: 8px;</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">  </span>--box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">  </span>--font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;</span></p>
+<p class="p1"><span class="s1">}</span></p>
+<p class="p2"><span class="s1"></span><br></p>
+<p class="p1"><span class="s1">body {</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">  </span>font-family: var(--font-family);</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">  </span>background-color: var(--background-color);</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">  </span>padding: 2rem;</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">  </span>max-width: 600px;</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">  </span>margin: auto;</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">  </span>color: #333;</span></p>
+<p class="p1"><span class="s1">}</span></p>
+<p class="p2"><span class="s1"></span><br></p>
+<p class="p1"><span class="s1">h1, h2 {</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">  </span>text-align: center;</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">  </span>color: #222;</span></p>
+<p class="p1"><span class="s1">}</span></p>
+<p class="p2"><span class="s1"></span><br></p>
+<p class="p1"><span class="s1">form, .log-entry, .card {</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">  </span>background: var(--card-color);</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">  </span>border-radius: var(--border-radius);</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">  </span>box-shadow: var(--box-shadow);</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">  </span>padding: 1rem;</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">  </span>margin-bottom: 1.5rem;</span></p>
+<p class="p1"><span class="s1">}</span></p>
+<p class="p2"><span class="s1"></span><br></p>
+<p class="p1"><span class="s1">label {</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">  </span>font-weight: bold;</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">  </span>display: block;</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">  </span>margin-top: 1rem;</span></p>
+<p class="p1"><span class="s1">}</span></p>
+<p class="p2"><span class="s1"></span><br></p>
+<p class="p1"><span class="s1">input, select {</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">  </span>width: 100%;</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">  </span>padding: 0.5rem;</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">  </span>margin-top: 0.25rem;</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">  </span>border: 1px solid #ccc;</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">  </span>border-radius: 4px;</span></p>
+<p class="p1"><span class="s1">}</span></p>
+<p class="p2"><span class="s1"></span><br></p>
+<p class="p1"><span class="s1">button {</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">  </span>display: inline-block;</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">  </span>margin-top: 1rem;</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">  </span>padding: 0.6rem 1.2rem;</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">  </span>background: var(--primary-color);</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">  </span>color: white;</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">  </span>border: none;</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">  </span>border-radius: 4px;</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">  </span>font-size: 1rem;</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">  </span>cursor: pointer;</span></p>
+<p class="p1"><span class="s1">}</span></p>
+<p class="p2"><span class="s1"></span><br></p>
+<p class="p1"><span class="s1">button:hover {</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">  </span>background: #0056b3;</span></p>
+<p class="p1"><span class="s1">}</span></p>
+<p class="p2"><span class="s1"></span><br></p>
+<p class="p1"><span class="s1">.log-entry {</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">  </span>border-left: 4px solid var(--primary-color);</span></p>
+<p class="p1"><span class="s1">}</span></p>
+<p class="p2"><span class="s1"></span><br></p>
+<p class="p1"><span class="s1">.timestamp {</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">  </span>color: #666;</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">  </span>font-size: 0.9em;</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">  </span>margin-top: 0.25rem;</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">  </span>display: block;</span></p>
+<p class="p1"><span class="s1">}</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">  </span>&lt;/style&gt;</span></p>
+<p class="p1"><span class="s1">&lt;/head&gt;</span></p>
+<p class="p1"><span class="s1">&lt;body&gt;</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">  </span>&lt;h1&gt;Scan Student ID and Medication&lt;/h1&gt;</span></p>
+<p class="p2"><span class="s1"></span><br></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">  </span>&lt;label&gt;Administration Date:&lt;/label&gt;</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">  </span>&lt;input type="text" id="adminDate" disabled /&gt;</span></p>
+<p class="p2"><span class="s1"></span><br></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">  </span>&lt;label&gt;Select Staff:&lt;/label&gt;</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">  </span>&lt;select id="staffDropdown" required&gt;</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">    </span>&lt;option value=""&gt;-- Select a staff member --&lt;/option&gt;</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">    </span>&lt;option value="George Taylor"&gt;George Taylor&lt;/option&gt;</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">    </span>&lt;option value="Samantha Lee"&gt;Samantha Lee&lt;/option&gt;</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">    </span>&lt;option value="Marcus Grant"&gt;Marcus Grant&lt;/option&gt;</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">    </span>&lt;option value="Olivia Chen"&gt;Olivia Chen&lt;/option&gt;</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">  </span>&lt;/select&gt;</span></p>
+<p class="p2"><span class="s1"></span><br></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">  </span>&lt;form id="med-form"&gt;</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">    </span>&lt;label&gt;Student ID:&lt;/label&gt;</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">    </span>&lt;input type="text" id="studentId" required /&gt;</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">    </span>&lt;label&gt;Medication Pack ID:&lt;/label&gt;</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">    </span>&lt;input type="text" id="medCode" required /&gt;</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">    </span>&lt;button type="submit"&gt;Log Administration&lt;/button&gt;</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">  </span>&lt;/form&gt;</span></p>
+<p class="p2"><span class="s1"></span><br></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">  </span>&lt;h2&gt;Live Medication Log&lt;/h2&gt;</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">  </span>&lt;div id="live-log"&gt;Loading logs...&lt;/div&gt;</span></p>
+<p class="p2"><span class="s1"></span><br></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">  </span>&lt;button id="complete-btn"&gt;✅ Complete Med Pass &amp; Download CSV&lt;/button&gt;</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">  </span>&lt;a href="/history.html"&gt;&lt;button type="button"&gt;📜 View History&lt;/button&gt;&lt;/a&gt;</span></p>
+<p class="p2"><span class="s1"></span><br></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">  </span>&lt;script&gt;</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">    </span>// Auto-fill today's date</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">    </span>document.getElementById("adminDate").value = new Date().toISOString().slice(0, 10);</span></p>
+<p class="p2"><span class="s1"></span><br></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">    </span>// Submit med log</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">    </span>document.getElementById("med-form").addEventListener("submit", function (e) {</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">      </span>e.preventDefault();</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">      </span>const studentId = document.getElementById("studentId").value;</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">      </span>const medCode = document.getElementById("medCode").value;</span></p>
+<p class="p2"><span class="s1"></span><br></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">      </span>fetch("/log", {</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">        </span>method: "POST",</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">        </span>headers: { "Content-Type": "application/json" },</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">        </span>body: JSON.stringify({ studentId, medCode })</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">      </span>})</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">      </span>.then(res =&gt; res.json())</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">      </span>.then(data =&gt; {</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">        </span>alert("Logged!");</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">        </span>loadLiveLog();</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">        </span>document.getElementById("med-form").reset();</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">        </span>document.getElementById("studentId").focus();</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">      </span>})</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">      </span>.catch(err =&gt; alert("Error: " + err.message));</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">    </span>});</span></p>
+<p class="p2"><span class="s1"></span><br></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">    </span>// Load log entries</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">    </span>function loadLiveLog() {</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">      </span>fetch("/logs")</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">        </span>.then(res =&gt; res.json())</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">        </span>.then(data =&gt; {</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">          </span>const container = document.getElementById("live-log");</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">          </span>container.innerHTML = "";</span></p>
+<p class="p2"><span class="s1"></span><br></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">          </span>if (!data.length) {</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">            </span>container.textContent = "No logs yet.";</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">            </span>return;</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">          </span>}</span></p>
+<p class="p2"><span class="s1"></span><br></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">          </span>data.slice(0, 10).forEach(entry =&gt; {</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">            </span>const div = document.createElement("div");</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">            </span>div.className = "log-entry";</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">            </span>const time = new Date(entry.timestamp).toLocaleString();</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">            </span>div.innerHTML = `</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">              </span>&lt;strong&gt;${entry.student_id}&lt;/strong&gt; – ${entry.med_code}&lt;br /&gt;</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">              </span>&lt;span class="timestamp"&gt;${time}&lt;/span&gt;</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">            </span>`;</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">            </span>container.appendChild(div);</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">          </span>});</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">        </span>})</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">        </span>.catch(err =&gt; {</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">          </span>document.getElementById("live-log").textContent = "Error loading logs.";</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">        </span>});</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">    </span>}</span></p>
+<p class="p2"><span class="s1"></span><br></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">    </span>loadLiveLog();</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">    </span>setInterval(loadLiveLog, 10000);</span></p>
+<p class="p2"><span class="s1"></span><br></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">    </span>// Complete med pass and download CSV</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">    </span>document.getElementById("complete-btn").addEventListener("click", function () {</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">      </span>if (!confirm("Are you sure you want to complete the med pass and download the log?")) return;</span></p>
+<p class="p2"><span class="s1"></span><br></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">      </span>const nurse = document.getElementById("staffDropdown").value;</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">      </span>const shift = document.getElementById("adminDate").value;</span></p>
+<p class="p2"><span class="s1"></span><br></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">      </span>fetch(`/complete-pass?nurse=${encodeURIComponent(nurse)}&amp;shift=${encodeURIComponent(shift)}`)</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">        </span>.then(res =&gt; res.json())</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">        </span>.then(data =&gt; {</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">          </span>if (!data.length) {</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">            </span>alert("No data to export.");</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">            </span>return;</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">          </span>}</span></p>
+<p class="p2"><span class="s1"></span><br></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">          </span>const today = new Date().toISOString().slice(0, 10);</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">          </span>const csvHeader = `Nurse Name: ${nurse}\nAdministration Date: ${shift}\nExport Date: ${today}\n\nStudent ID,Medication Code,Timestamp\n`;</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">          </span>const csvRows = data.map(row =&gt;</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">            </span>`"${row.student_id}","${row.med_code}","${new Date(row.timestamp).toLocaleString()}"`</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">          </span>);</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">          </span>const csvContent = csvHeader + csvRows.join("\n");</span></p>
+<p class="p2"><span class="s1"></span><br></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">          </span>const blob = new Blob([csvContent], { type: "text/csv" });</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">          </span>const url = URL.createObjectURL(blob);</span></p>
+<p class="p2"><span class="s1"></span><br></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">          </span>const a = document.createElement("a");</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">          </span>a.href = url;</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">          </span>a.download = `med-pass-${today}.csv`;</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">          </span>document.body.appendChild(a);</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">          </span>a.click();</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">          </span>document.body.removeChild(a);</span></p>
+<p class="p2"><span class="s1"></span><br></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">          </span>setTimeout(() =&gt; {</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">            </span>window.location.href = "/";</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">          </span>}, 1000);</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">        </span>})</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">        </span>.catch(err =&gt; {</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">          </span>alert("Failed to complete med pass: " + err.message);</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">        </span>});</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">    </span>});</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">    </span>// Focus studentId on page load</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">    </span>document.getElementById("studentId").focus();</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">  </span>&lt;/script&gt;</span></p>
+<p class="p1"><span class="s1">&lt;/body&gt;</span></p>
+<p class="p1"><span class="s1">&lt;/html&gt;</span></p>
+</body>
+</html>
