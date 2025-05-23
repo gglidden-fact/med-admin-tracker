@@ -3,25 +3,37 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Medication Tracker</title>
+  <title>Franklin Academy | Medication Tracker</title>
   <style>
     body {
-      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-      background-color: #f0f2f5;
-      max-width: 600px;
+      font-family: 'Helvetica Neue', Helvetica, sans-serif;
+      background-color: #d6d2c4;
+      max-width: 700px;
       margin: auto;
       padding: 2rem;
-      color: #333;
+      color: #00263a;
     }
-    h1, h2 {
-      text-align: center;
+    header {
+      display: flex;
+      align-items: center;
+      margin-bottom: 2rem;
+    }
+    header img {
+      height: 60px;
+      margin-right: 1rem;
+    }
+    h1 {
+      font-family: Georgia, serif;
+      color: #861f41;
+      font-size: 1.8rem;
+      margin-bottom: 0.5rem;
     }
     form, .log-entry {
       background: white;
       padding: 1rem;
       border-radius: 8px;
-      box-shadow: 0 2px 8px rgba(0,0,0,0.1);
-      margin-bottom: 1rem;
+      box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+      margin-bottom: 1.5rem;
     }
     label {
       font-weight: bold;
@@ -38,22 +50,37 @@
     button {
       margin-top: 1rem;
       padding: 0.6rem 1.2rem;
-      background: #007bff;
+      background: #861f41;
       color: white;
       border: none;
       border-radius: 4px;
       font-size: 1rem;
     }
+    button:hover {
+      background: #6e1a35;
+    }
+    .control-row {
+      display: flex;
+      gap: 0.5rem;
+      margin-top: 0.5rem;
+    }
+    .control-row input {
+      flex: 1;
+    }
     .timestamp {
-      color: #666;
-      font-size: 0.9rem;
-      display: block;
-      margin-top: 0.25rem;
+      font-size: 0.9em;
+      color: #555;
     }
   </style>
 </head>
 <body>
-  <h1>Scan Student ID and Medication</h1>
+  <header>
+    <img src="logo-placeholder.png" alt="Franklin Academy Logo" />
+    <div>
+      <h1>Franklin Academy</h1>
+      <p><strong>Medication Administration Tracker</strong></p>
+    </div>
+  </header>
 
   <label>Administration Date:</label>
   <input type="text" id="adminDate" disabled />
@@ -78,6 +105,16 @@
     <input type="text" id="studentId" required />
     <label>Medication Pack ID:</label>
     <input type="text" id="medCode" required />
+
+    <div>
+      <label>Controlled Substance Count (if applicable):</label>
+      <div class="control-row">
+        <input type="number" id="control1" placeholder="Control #1" min="0" />
+        <input type="number" id="control2" placeholder="Control #2" min="0" />
+        <input type="number" id="control3" placeholder="Control #3" min="0" />
+      </div>
+    </div>
+
     <button type="submit">Log Administration</button>
   </form>
 
@@ -88,7 +125,6 @@
   <a href="/history.html"><button type="button">📜 View History</button></a>
 
   <script>
-    // Auto-fill today's date
     document.getElementById("adminDate").value = new Date().toISOString().slice(0, 10);
     document.getElementById("studentId").focus();
 
@@ -166,9 +202,9 @@
           }
 
           const today = new Date().toISOString().slice(0, 10);
-          const csvHeader = `Nurse Name: ${nurse}\nAdministration Date: ${shift}\nExport Date: ${today}\n\nStudent ID,Medication Code,Timestamp\n`;
+          const csvHeader = `Nurse Name: ${nurse}\nAdministration Date: ${shift}\nExport Date: ${today}\n\nStudent ID,Medication Code,Timestamp,Control #1,Control #2,Control #3\n`;
           const csvRows = data.map(row =>
-            `"${row.student_id}","${row.med_code}","${new Date(row.timestamp).toLocaleString()}"`
+            `"${row.student_id}","${row.med_code}","${new Date(row.timestamp).toLocaleString()}","${row.control1 || ''}","${row.control2 || ''}","${row.control3 || ''}"`
           );
           const csvContent = csvHeader + csvRows.join("\n");
 
