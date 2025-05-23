@@ -92,6 +92,23 @@ app.get("/complete-pass", async (req, res) => {
   }
 });
 
+// GET: Fetch archived med passes
+app.get("/history", async (req, res) => {
+  try {
+    const result = await pool.query(
+      "SELECT * FROM pass_history ORDER BY pass_submitted DESC"
+    );
+    res.json(result.rows);
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+});
+
+// Serve index.html at root URL
+app.get("/", (req, res) => {
+  res.sendFile(__dirname + "/public/index.html");
+});
+
 // Log the environment and start the server
 console.log("RAILWAY PORT ENV:", process.env.PORT);
 app.listen(port, () => {
