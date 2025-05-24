@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Real-Time Med Dashboard | Franklin Academy</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <style>
+    body {
+      font-family: 'Helvetica Neue', Helvetica, sans-serif;
+      background-color: #d6d2c4;
+      max-width: 900px;
+      margin: auto;
+      padding: 2rem;
+      color: #00263a;
+    }
+    header {
+      display: flex;
+      align-items: center;
+      margin-bottom: 2rem;
+    }
+    header img {
+      height: 60px;
+      margin-right: 1rem;
+    }
+    h1 {
+      font-family: Georgia, serif;
+      color: #861f41;
+      font-size: 1.8rem;
+      margin-bottom: 0.5rem;
+    }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      background: white;
+      box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+      border-radius: 8px;
+      overflow: hidden;
+    }
+    th, td {
+      padding: 0.75rem;
+      border-bottom: 1px solid #ddd;
+      text-align: left;
+    }
+    th {
+      background-color: #861f41;
+      color: white;
+      font-weight: bold;
+    }
+    tr:nth-child(even) {
+      background-color: #f6f4f0;
+    }
+    .status {
+      font-weight: bold;
+      text-align: center;
+    }
+    .yes {
+      color: green;
+    }
+    .no {
+      color: red;
+    }
+    .loading {
+      text-align: center;
+      font-style: italic;
+      color: #666;
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <img src="logo-placeholder.png" alt="Franklin Academy Logo" />
+    <div>
+      <h1>Real-Time Med Administration Dashboard</h1>
+    </div>
+  </header>
+
+  <table>
+    <thead>
+      <tr>
+        <th>Student</th>
+        <th>Time</th>
+        <th>Medication</th>
+        <th>Scheduled</th>
+        <th>Given</th>
+      </tr>
+    </thead>
+    <tbody id="dashboard-body">
+      <tr><td colspan="5" class="loading">Loading today's schedule...</td></tr>
+    </tbody>
+  </table>
+
+  <script>
+    function loadSchedule() {
+      fetch("/schedule/today")
+        .then(res => res.json())
+        .then(data => {
+          const tbody = document.getElementById("dashboard-body");
+          tbody.innerHTML = "";
+
+          if (!data.length) {
+            tbody.innerHTML = "<tr><td colspan='5' class='loading'>No scheduled meds for today.</td></tr>";
+            return;
+          }
+
+          data.forEach(entry => {
+            const row = document.createElement("tr");
+            row.innerHTML = `
+              <td>${entry.student}</td>
+              <td>${entry.time}</td>
+              <td>${entry.medication}</td>
+              <td class="status yes">✔️</td>
+              <td class="status ${entry.given ? 'yes' : 'no'}">${entry.given ? '✔️' : '❌'}</td>
+            `;
+            tbody.appendChild(row);
+          });
+        })
+        .catch(err => {
+          document.getElementById("dashboard-body").innerHTML =
+            `<tr><td colspan='5' class='loading'>Error loading data: ${err.message}</td></tr>`;
+        });
+    }
+
+    loadSchedule();
+    setInterval(loadSchedule, 30000); // refresh every 30 seconds
+  </script>
+</body>
+</html>
