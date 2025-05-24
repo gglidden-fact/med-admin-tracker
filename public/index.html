@@ -1,83 +1,200 @@
-<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
-<html>
+<!DOCTYPE html>
+<html lang="en">
 <head>
-  <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
-  <meta http-equiv="Content-Style-Type" content="text/css">
-  <title></title>
-  <meta name="Generator" content="Cocoa HTML Writer">
-  <meta name="CocoaVersion" content="2575.6">
-  <style type="text/css">
-    p.p1 {margin: 0.0px 0.0px 0.0px 0.0px; font: 12.0px Times; -webkit-text-stroke: #000000}
-    p.p2 {margin: 0.0px 0.0px 0.0px 0.0px; font: 12.0px Times; -webkit-text-stroke: #000000; min-height: 14.0px}
-    span.s1 {font-kerning: none}
-  </style>
+  <meta charset="UTF-8" />
+  <title>Franklin Med Admin</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="style.css" />
 </head>
 <body>
-<p class="p1"><span class="s1">Franklin Medication Administration</span></p>
-<p class="p1"><span class="s1">Administering Person</span></p>
-<p class="p1"><span class="s1"><span class="Apple-converted-space">        </span>Select your name</span></p>
-<p class="p1"><span class="s1"><span class="Apple-converted-space">        </span>George Glidden (NP|Director)</span></p>
-<p class="p1"><span class="s1"><span class="Apple-converted-space">        </span>Jennifer Spencer (RN)</span></p>
-<p class="p1"><span class="s1"><span class="Apple-converted-space">        </span>Angie Oakes (RN)</span></p>
-<p class="p1"><span class="s1"><span class="Apple-converted-space">        </span>Kristelle Caslangen (RN)</span></p>
-<p class="p1"><span class="s1"><span class="Apple-converted-space">        </span>Pamela Cote (EMT)</span></p>
-<p class="p1"><span class="s1"><span class="Apple-converted-space">        </span>Administrator-On-Duty</span></p>
-<p class="p1"><span class="s1"><span class="Apple-converted-space">        </span>BAT On-Duty</span></p>
-<p class="p1"><span class="s1"><span class="Apple-converted-space">        </span>Tekayiha Coleman (Beacon College- Summer Programs)</span></p>
-<p class="p1"><span class="s1"><span class="Apple-converted-space">        </span>George Glidden (Beacon College-Summer Programs)</span></p>
-<p class="p1"><span class="s1"><span class="Apple-converted-space">        </span>Veronica Simpkins (Beacon College-Summer Programs)</span></p>
-<p class="p1"><span class="s1"><span class="Apple-converted-space">       </span>Current Med Block</span></p>
-<p class="p1"><span class="s1"><span class="Apple-converted-space">        </span>Morning (7:30–9:30a)</span></p>
-<p class="p1"><span class="s1"><span class="Apple-converted-space">        </span>NOON</span></p>
-<p class="p1"><span class="s1"><span class="Apple-converted-space">        </span>3–4 PM</span></p>
-<p class="p1"><span class="s1"><span class="Apple-converted-space">        </span>Dinner (5:30–6:30p)</span></p>
-<p class="p1"><span class="s1"><span class="Apple-converted-space">        </span>Bedtime (7:30–9:30p)</span></p>
-<p class="p1"><span class="s1"><span class="Apple-converted-space">        </span>PRN</span></p>
-<p class="p2"><span class="s1"><span class="Apple-converted-space">      </span></span></p>
-<p class="p1"><span class="s1">Student ID Medication Pack ID</span></p>
-<p class="p1"><span class="s1">Remaining #1</span></p>
-<p class="p1"><span class="s1">Remaining #2</span></p>
-<p class="p1"><span class="s1">Remaining #3</span></p>
-<p class="p1"><span class="s1">Log Medication</span></p>
-<p class="p2"><span class="s1"></span><br></p>
-<p class="p1"><span class="s1">✅ Complete Med Pass</span></p>
-<p class="p2"><span class="s1"></span><br></p>
-<p class="p1"><span class="s1">&lt;section class="panel" style="margin-top: 2rem;"&gt;</span></p>
-<p class="p1"><span class="s1"><span class="Apple-converted-space">  </span>&lt;h2&gt;Live Medication Log&lt;/h2&gt;</span></p>
-<p class="p1"><span class="s1"><span class="Apple-converted-space">  </span>&lt;div id="live-log"&gt;Loading logs...&lt;/div&gt;</span></p>
-<p class="p1"><span class="s1">&lt;/section&gt;</span></p>
-<p class="p2"><span class="s1"></span><br></p>
-<p class="p1"><span class="s1">&lt;script&gt;</span></p>
-<p class="p1"><span class="s1"><span class="Apple-converted-space">  </span>function completeMedPass() {</span></p>
-<p class="p1"><span class="s1"><span class="Apple-converted-space">    </span>// existing function code</span></p>
-<p class="p1"><span class="s1"><span class="Apple-converted-space">  </span>}</span></p>
-<p class="p2"><span class="s1"></span><br></p>
-<p class="p1"><span class="s1"><span class="Apple-converted-space">  </span>async function loadLiveLog() {</span></p>
-<p class="p1"><span class="s1"><span class="Apple-converted-space">    </span>try {</span></p>
-<p class="p1"><span class="s1"><span class="Apple-converted-space">      </span>const res = await fetch("/logs");</span></p>
-<p class="p1"><span class="s1"><span class="Apple-converted-space">      </span>const data = await res.json();</span></p>
-<p class="p2"><span class="s1"></span><br></p>
-<p class="p1"><span class="s1"><span class="Apple-converted-space">      </span>const container = document.getElementById("live-log");</span></p>
-<p class="p1"><span class="s1"><span class="Apple-converted-space">      </span>container.innerHTML = "";</span></p>
-<p class="p2"><span class="s1"></span><br></p>
-<p class="p1"><span class="s1"><span class="Apple-converted-space">      </span>if (!data.length) {</span></p>
-<p class="p1"><span class="s1"><span class="Apple-converted-space">        </span>container.textContent = "No logs yet.";</span></p>
-<p class="p1"><span class="s1"><span class="Apple-converted-space">        </span>return;</span></p>
-<p class="p1"><span class="s1"><span class="Apple-converted-space">      </span>}</span></p>
-<p class="p2"><span class="s1"></span><br></p>
-<p class="p1"><span class="s1"><span class="Apple-converted-space">      </span>data.slice(0, 10).forEach(entry =&gt; {</span></p>
-<p class="p1"><span class="s1"><span class="Apple-converted-space">        </span>const div = document.createElement("div");</span></p>
-<p class="p1"><span class="s1"><span class="Apple-converted-space">        </span>const time = new Date(entry.timestamp).toLocaleString();</span></p>
-<p class="p1"><span class="s1"><span class="Apple-converted-space">        </span>div.innerHTML = `&lt;strong&gt;${entry.student_id}&lt;/strong&gt; – ${entry.med_code} &lt;span style="color:gray;"&gt;@ ${time}&lt;/span&gt;`;</span></p>
-<p class="p1"><span class="s1"><span class="Apple-converted-space">        </span>container.appendChild(div);</span></p>
-<p class="p1"><span class="s1"><span class="Apple-converted-space">      </span>});</span></p>
-<p class="p1"><span class="s1"><span class="Apple-converted-space">    </span>} catch (err) {</span></p>
-<p class="p1"><span class="s1"><span class="Apple-converted-space">      </span>document.getElementById("live-log").textContent = "Error loading logs.";</span></p>
-<p class="p1"><span class="s1"><span class="Apple-converted-space">    </span>}</span></p>
-<p class="p1"><span class="s1"><span class="Apple-converted-space">  </span>}</span></p>
-<p class="p2"><span class="s1"></span><br></p>
-<p class="p1"><span class="s1"><span class="Apple-converted-space">  </span>loadLiveLog();</span></p>
-<p class="p1"><span class="s1"><span class="Apple-converted-space">  </span>setInterval(loadLiveLog, 10000);</span></p>
-<p class="p1"><span class="s1">&lt;/script&gt;</span></p>
+  <header>
+    <img src="logo-placeholder.png" alt="Franklin Logo" />
+    <div>
+      <h1>Franklin Medication Administration</h1>
+    </div>
+  </header>
+
+  <main>
+    <section class="panel">
+      <label for="staff">Administering Person</label>
+      <select id="staff">
+        <option value="">Select your name</option>
+        <option>George Glidden (NP|Director)</option>
+        <option>Jennifer Spencer (RN)</option>
+        <option>Angie Oakes (RN)</option>
+        <option>Kristelle Caslangen (RN)</option>
+        <option>Pamela Cote (EMT)</option>
+        <option>Administrator-On-Duty</option>
+        <option>BAT On-Duty</option>
+        <option>Tekayiha Coleman (Beacon College- Summer Programs)</option>
+        <option>George Glidden (Beacon College-Summer Programs)</option>
+        <option>Veronica Simpkins (Beacon College-Summer Programs)</option>
+      </select>
+
+      <label for="blockSelect" style="margin-top: 1rem;">Current Med Block</label>
+      <select id="blockSelect" onchange="togglePrnFields()">
+        <option value="Morning">Morning (7:30–9:30a)</option>
+        <option value="NOON">NOON</option>
+        <option value="3-4P">3–4 PM</option>
+        <option value="Dinner">Dinner (5:30–6:30p)</option>
+        <option value="Bedtime">Bedtime (7:30–9:30p)</option>
+        <option value="PRN">PRN</option>
+      </select>
+    </section>
+
+    <section class="panel">
+      <label for="studentId">Student ID</label>
+      <input type="text" id="studentId" placeholder="Scan or enter Student ID" />
+
+      <label for="medCode">Medication Pack ID</label>
+      <input type="text" id="medCode" placeholder="Scan or enter Medication Pack ID" />
+
+      <div class="control-row">
+        <div>
+          <label for="control1">Remaining #1</label>
+          <input type="number" id="control1" min="0" />
+        </div>
+        <div>
+          <label for="control2">Remaining #2</label>
+          <input type="number" id="control2" min="0" />
+        </div>
+        <div>
+          <label for="control3">Remaining #3</label>
+          <input type="number" id="control3" min="0" />
+        </div>
+      </div>
+
+      <div id="prnFields" style="display: none; margin-top: 1.5rem;">
+        <h3>PRN Medication Details</h3>
+        <label for="prnReason">Reason Given</label>
+        <input type="text" id="prnReason" placeholder="Enter reason for PRN med" />
+        <label for="prnEffect">Effectiveness</label>
+        <select id="prnEffect">
+          <option value="">Select outcome</option>
+          <option value="Effective">Effective</option>
+          <option value="Partially Effective">Partially Effective</option>
+          <option value="Not Effective">Not Effective</option>
+        </select>
+      </div>
+
+      <button onclick="logMed()">Log Medication</button>
+      <p class="success" id="statusMsg"></p>
+    </section>
+
+    <section class="panel" style="margin-top: 2rem;">
+      <button style="background-color: darkgreen;" onclick="completeMedPass()">✅ Complete Med Pass</button>
+      <p id="completeMsg" class="success"></p>
+    </section>
+
+    <section class="panel" style="margin-top: 2rem;">
+      <h2>Live Medication Log</h2>
+      <div id="live-log">Loading logs...</div>
+    </section>
+  </main>
+
+  <script>
+    const staffSelect = document.getElementById("staff");
+    const blockSelect = document.getElementById("blockSelect");
+
+    function getCurrentBlock() {
+      return blockSelect.value;
+    }
+
+    function togglePrnFields() {
+      const show = getCurrentBlock() === "PRN";
+      document.getElementById("prnFields").style.display = show ? "block" : "none";
+    }
+
+    window.onload = () => {
+      const storedStaff = localStorage.getItem("adminStaff");
+      if (storedStaff) staffSelect.value = storedStaff;
+      togglePrnFields();
+    };
+
+    staffSelect.addEventListener("change", () => {
+      localStorage.setItem("adminStaff", staffSelect.value);
+    });
+
+    async function logMed() {
+      togglePrnFields();
+
+      const studentId = document.getElementById("studentId").value.trim();
+      const medCode = document.getElementById("medCode").value.trim();
+      const staff = staffSelect.value;
+      const block = getCurrentBlock();
+      const control1 = document.getElementById("control1").value.trim();
+      const control2 = document.getElementById("control2").value.trim();
+      const control3 = document.getElementById("control3").value.trim();
+      const prnReason = document.getElementById("prnReason").value.trim();
+      const prnEffect = document.getElementById("prnEffect").value;
+
+      if (!studentId || !medCode || !staff) {
+        alert("Please complete all required fields.");
+        return;
+      }
+
+      const res = await fetch("/log-block", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          student: studentId,
+          block,
+          staff,
+          controls: [control1, control2, control3],
+          prnReason,
+          prnEffect
+        })
+      });
+
+      const result = await res.json();
+      if (res.ok) {
+        document.getElementById("statusMsg").textContent = `✅ Logged successfully for ${studentId}`;
+        document.getElementById("studentId").value = "";
+        document.getElementById("medCode").value = "";
+        document.getElementById("control1").value = "";
+        document.getElementById("control2").value = "";
+        document.getElementById("control3").value = "";
+        document.getElementById("prnReason").value = "";
+        document.getElementById("prnEffect").value = "";
+        loadLiveLog();
+      } else {
+        alert(result.error || "Failed to log entry.");
+      }
+    }
+
+    function completeMedPass() {
+      const block = getCurrentBlock();
+      const timestamp = new Date().toLocaleString();
+      document.getElementById("completeMsg").textContent = `✅ Med pass for ${block} completed at ${timestamp}. CSV saved server-side.`;
+    }
+
+    async function loadLiveLog() {
+      try {
+        const res = await fetch("/logs");
+        const data = await res.json();
+
+        const container = document.getElementById("live-log");
+        container.innerHTML = "";
+
+        if (!data.length) {
+          container.textContent = "No logs yet.";
+          return;
+        }
+
+        data.slice(0, 10).forEach(entry => {
+          const div = document.createElement("div");
+          const time = new Date(entry.timestamp).toLocaleString();
+          div.innerHTML = `<strong>${entry.student_id}</strong> – ${entry.med_code} <span style="color:gray;">@ ${time}</span>`;
+          container.appendChild(div);
+        });
+      } catch (err) {
+        document.getElementById("live-log").textContent = "Error loading logs.";
+      }
+    }
+
+    loadLiveLog();
+    setInterval(loadLiveLog, 10000);
+  </script>
 </body>
 </html>
