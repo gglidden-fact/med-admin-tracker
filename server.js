@@ -18,19 +18,28 @@ app.use(cors());
 app.use(express.json());
 app.use(express.static("public"));
 
-// Ensure logs table has needed fields
+// Ensure logs table exists
 pool.query(`
   CREATE TABLE IF NOT EXISTS logs (
     id SERIAL PRIMARY KEY,
     student_id TEXT,
     med_code TEXT,
-    timestamp TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-    prn_reason TEXT,
-    prn_effect TEXT
+    timestamp TIMESTAMP DEFAULT CURRENT_TIMESTAMP
   );
 `).catch(err => console.error("DB Init Error:", err));
 
-// POST: Log med pass with controls and PRN support
+// ✅ Auto-create PRN columns if missing
+(async () => {
+  try {
+    await pool.query(`ALTER TABLE logs ADD COLUMN IF NOT EXISTS prn_reason TEXT`);
+    await pool.query(`ALTER TABLE logs ADD COLUMN IF NOT EXISTS prn_effect TEXT`);
+    console.log("✅ PRN columns verified or created.");
+  } catch (err) {
+    console.error("❌ Failed to create PRN columns:", err.message);
+  }
+})();
+
+// POST: Log med pass
 app.post("/log-block", async (req, res) => {
   const {
     student,
@@ -66,11 +75,12 @@ app.post("/log-block", async (req, res) => {
     }
 
     const dbResult = await pool.query(
-      `INSERT INTO logs (student_id, med_code, prn_reason, prn_effect)
+      `INSERT INTO logs (student_id, med_code, prn_reason, prn_effect) 
        VALUES ($1, $2, $3, $4) RETURNING *`,
       [student, med_code, prnReason, prnEffect]
     );
 
+    // Archive to CSV
     const csvRow = `"${student}","${block}","${staff}","${timestamp.toISOString()}","${control1}","${control2}","${control3}","${prnReason}","${prnEffect}"\n`;
     const archiveDir = path.join(__dirname, "archives");
     if (!fs.existsSync(archiveDir)) fs.mkdirSync(archiveDir);
@@ -86,6 +96,7 @@ app.post("/log-block", async (req, res) => {
       fs.appendFileSync(filePath, csvRow);
     }
 
+    // Subtract controls
     for (const med of [control1, control2, control3]) {
       if (med) {
         await pool.query(
@@ -104,7 +115,7 @@ app.post("/log-block", async (req, res) => {
   }
 });
 
-// GET: Today's schedule with log status
+// GET: Daily schedule + status
 app.get("/schedule/today", async (req, res) => {
   try {
     const schedule = require("./data/todays-schedule.json");
@@ -129,23 +140,12 @@ app.get("/schedule/today", async (req, res) => {
     res.json(result);
   } catch (err) {
     console.error("Error in /schedule/today:", err);
-    res.status(500).json({ error: "Failed to load schedule" });
+    res.status(500).json({ error: "Unable to load schedule." });
   }
 });
 
 // Start server
 console.log("RAILWAY PORT ENV:", process.env.PORT);
-// TEMP: Add prn columns if missing
-app.get("/debug/add-prn-columns", async (req, res) => {
-  try {
-    await pool.query(`ALTER TABLE logs ADD COLUMN IF NOT EXISTS prn_reason TEXT`);
-    await pool.query(`ALTER TABLE logs ADD COLUMN IF NOT EXISTS prn_effect TEXT`);
-    res.send("✅ Columns prn_reason and prn_effect added to logs table.");
-  } catch (err) {
-    console.error("Failed to alter table:", err.message);
-    res.status(500).send("❌ Failed to add columns. " + err.message);
-  }
-});
 app.listen(port, () => {
   console.log(`🚨 Server running on port ${port}`);
 });
