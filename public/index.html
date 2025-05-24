@@ -2,228 +2,140 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Franklin Academy | Medication Tracker</title>
+  <title>Med Admin Tracker | Franklin Academy</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
   <style>
     body {
-      font-family: 'Helvetica Neue', Helvetica, sans-serif;
-      background-color: #d6d2c4;
-      max-width: 700px;
-      margin: auto;
+      font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
+      background-color: #f9f6f0;
+      margin: 0;
       padding: 2rem;
       color: #00263a;
     }
-    header {
-      display: flex;
-      align-items: center;
+
+    .container {
+      max-width: 700px;
+      margin: auto;
+      background: #fff;
+      padding: 2rem;
+      border-radius: 12px;
+      box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+    }
+
+    h1 {
+      text-align: center;
+      color: #861f41;
+      font-family: Georgia, serif;
       margin-bottom: 2rem;
     }
-    header img {
-      height: 60px;
-      margin-right: 1rem;
-    }
-    h1 {
-      font-family: Georgia, serif;
-      color: #861f41;
-      font-size: 1.8rem;
-      margin-bottom: 0.5rem;
-    }
-    form, .log-entry {
-      background: white;
-      padding: 1rem;
-      border-radius: 8px;
-      box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
-      margin-bottom: 1.5rem;
-    }
+
     label {
-      font-weight: bold;
       display: block;
       margin-top: 1rem;
-    }
-    input, select {
-      width: 100%;
-      padding: 0.5rem;
-      margin-top: 0.25rem;
-      border-radius: 4px;
-      border: 1px solid #ccc;
-    }
-    button {
-      margin-top: 1rem;
-      padding: 0.6rem 1.2rem;
-      background: #861f41;
-      color: white;
-      border: none;
-      border-radius: 4px;
+      font-weight: 600;
       font-size: 1rem;
     }
-    button:hover {
-      background: #6e1a35;
+
+    input[type="text"] {
+      width: 100%;
+      padding: 0.7rem;
+      font-size: 1rem;
+      margin-top: 0.3rem;
+      border: 1px solid #ccc;
+      border-radius: 6px;
     }
-    .control-row {
-      display: flex;
-      gap: 0.5rem;
+
+    button {
+      margin-top: 1.5rem;
+      padding: 0.75rem 1.5rem;
+      font-size: 1rem;
+      background-color: #861f41;
+      color: white;
+      border: none;
+      border-radius: 6px;
+      cursor: pointer;
+      width: 100%;
+    }
+
+    button:disabled {
+      background-color: #ccc;
+      cursor: not-allowed;
+    }
+
+    #student-meds {
+      margin-top: 1.5rem;
+      font-size: 0.95rem;
+      background: #f3f3f3;
+      padding: 1rem;
+      border-radius: 8px;
+    }
+
+    ul {
       margin-top: 0.5rem;
-    }
-    .control-row input {
-      flex: 1;
-    }
-    .timestamp {
-      font-size: 0.9em;
-      color: #555;
+      padding-left: 1.2rem;
     }
   </style>
 </head>
 <body>
-  <header>
-    <img src="logo-placeholder.png" alt="Franklin Academy Logo" />
-    <div>
-      <h1>Franklin Academy</h1>
-      <p><strong>Medication Administration Tracker</strong></p>
-    </div>
-  </header>
+  <div class="container">
+    <h1>Franklin Med Administration</h1>
 
-  <label>Administration Date:</label>
-  <input type="text" id="adminDate" disabled />
+    <label for="student-id">Scan or Enter Student ID</label>
+    <input type="text" id="student-id" placeholder="e.g., Audrey Allen" autocomplete="off" />
 
-  <label>Select Staff:</label>
-  <select id="staffDropdown" required>
-    <option value="">-- Select a staff member --</option>
-    <option value="George Glidden (NP|Director)">George Glidden (NP|Director)</option>
-    <option value="Jennifer Spencer (RN)">Jennifer Spencer (RN)</option>
-    <option value="Angie Oakes (RN)">Angie Oakes (RN)</option>
-    <option value="Kristelle Caslangen (RN)">Kristelle Caslangen (RN)</option>
-    <option value="Pamela Cote (EMT)">Pamela Cote (EMT)</option>
-    <option value="Administrator-On-Duty">Administrator-On-Duty</option>
-    <option value="BAT On-Duty">BAT On-Duty</option>
-    <option value="Tekayiha Coleman (Beacon College- Summer Programs)">Tekayiha Coleman (Beacon College- Summer Programs)</option>
-    <option value="George Glidden (Beacon College-Summer Programs)">George Glidden (Beacon College-Summer Programs)</option>
-    <option value="Veronica Simpkins (Beacon College-Summer Programs)">Veronica Simpkins (Beacon College-Summer Programs)</option>
-  </select>
-
-  <form id="med-form">
-    <label>Student ID:</label>
-    <input type="text" id="studentId" required />
-    <label>Medication Pack ID:</label>
-    <input type="text" id="medCode" required />
-
-    <div>
-      <label>Controlled Substance Count (if applicable):</label>
-      <div class="control-row">
-        <input type="number" id="control1" placeholder="Control #1" min="0" />
-        <input type="number" id="control2" placeholder="Control #2" min="0" />
-        <input type="number" id="control3" placeholder="Control #3" min="0" />
-      </div>
-    </div>
-
-    <button type="submit">Log Administration</button>
-  </form>
-
-  <h2>Live Medication Log</h2>
-  <div id="live-log">Loading logs...</div>
-
-  <button id="complete-btn">✅ Complete Med Pass & Download CSV</button>
-  <a href="/history.html"><button type="button">📜 View History</button></a>
+    <div id="student-meds"></div>
+    <button id="confirm-pass" disabled>Complete Med Pass</button>
+  </div>
 
   <script>
-    document.getElementById("adminDate").value = new Date().toISOString().slice(0, 10);
-    document.getElementById("studentId").focus();
-
-    document.getElementById("med-form").addEventListener("submit", function (e) {
-      e.preventDefault();
-      const studentId = document.getElementById("studentId").value;
-      const medCode = document.getElementById("medCode").value;
-
-      if (!studentId || !medCode) {
-        alert("Please enter both Student ID and Medication Pack ID.");
-        return;
-      }
-
-      fetch("/log", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ studentId, medCode })
-      })
-      .then(res => {
-        if (!res.ok) throw new Error("Server error");
-        return res.json();
-      })
-      .then(data => {
-        alert("Medication logged successfully.");
-        loadLiveLog();
-        document.getElementById("med-form").reset();
-        document.getElementById("studentId").focus();
-      })
-      .catch(err => alert("Error: " + err.message));
-    });
-
-    function loadLiveLog() {
-      fetch("/logs")
-        .then(res => res.json())
-        .then(data => {
-          const container = document.getElementById("live-log");
-          container.innerHTML = "";
-
-          if (!data.length) {
-            container.textContent = "No logs yet.";
-            return;
-          }
-
-          data.slice(0, 10).forEach(entry => {
-            const div = document.createElement("div");
-            div.className = "log-entry";
-            const time = new Date(entry.timestamp).toLocaleString();
-            div.innerHTML = `
-              <strong>${entry.student_id}</strong> – ${entry.med_code}
-              <span class="timestamp">${time}</span>
-            `;
-            container.appendChild(div);
-          });
-        })
-        .catch(err => {
-          document.getElementById("live-log").textContent = "Error loading logs.";
-        });
+    function getCurrentBlock() {
+      const hour = new Date().getHours();
+      if (hour < 11) return "AM";
+      if (hour < 14) return "NOON";
+      return "PM";
     }
 
-    loadLiveLog();
-    setInterval(loadLiveLog, 10000);
+    document.getElementById("student-id").addEventListener("change", () => {
+      const studentId = document.getElementById("student-id").value.trim().toLowerCase();
+      const block = getCurrentBlock();
+      const output = document.getElementById("student-meds");
+      const button = document.getElementById("confirm-pass");
 
-    document.getElementById("complete-btn").addEventListener("click", function () {
-      if (!confirm("Are you sure you want to complete the med pass and download the log?")) return;
-
-      const nurse = document.getElementById("staffDropdown").value;
-      const shift = document.getElementById("adminDate").value;
-
-      fetch(`/complete-pass?nurse=${encodeURIComponent(nurse)}&shift=${encodeURIComponent(shift)}`)
+      fetch("/schedule/today")
         .then(res => res.json())
         .then(data => {
-          if (!data.length) {
-            alert("No data to export.");
-            return;
-          }
-
-          const today = new Date().toISOString().slice(0, 10);
-          const csvHeader = `Nurse Name: ${nurse}\nAdministration Date: ${shift}\nExport Date: ${today}\n\nStudent ID,Medication Code,Timestamp,Control #1,Control #2,Control #3\n`;
-          const csvRows = data.map(row =>
-            `"${row.student_id}","${row.med_code}","${new Date(row.timestamp).toLocaleString()}","${row.control1 || ''}","${row.control2 || ''}","${row.control3 || ''}"`
+          const match = data.find(
+            entry => entry.student.toLowerCase().includes(studentId) && entry.block === block
           );
-          const csvContent = csvHeader + csvRows.join("\n");
 
-          const blob = new Blob([csvContent], { type: "text/csv" });
-          const url = URL.createObjectURL(blob);
+          if (match) {
+            output.innerHTML = `
+              <strong>${match.student} – ${match.block} Med Pass</strong>
+              <ul>${match.medications.map(med => `<li>${med}</li>`).join("")}</ul>
+            `;
+            button.disabled = false;
+            button.dataset.student = match.student;
+            button.dataset.block = match.block;
+          } else {
+            output.innerHTML = "<em>No scheduled medications found for this student and block.</em>";
+            button.disabled = true;
+          }
+        });
+    });
 
-          const a = document.createElement("a");
-          a.href = url;
-          a.download = `med-pass-${today}.csv`;
-          document.body.appendChild(a);
-          a.click();
-          document.body.removeChild(a);
+    document.getElementById("confirm-pass").addEventListener("click", () => {
+      const student = document.getElementById("confirm-pass").dataset.student;
+      const block = document.getElementById("confirm-pass").dataset.block;
 
-          setTimeout(() => {
-            window.location.href = "/";
-          }, 1000);
-        })
-        .catch(err => {
-          alert("Failed to complete med pass: " + err.message);
+      fetch("/log-block", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ student, block })
+      })
+        .then(res => res.json())
+        .then(response => {
+          alert(`Logged: ${response.status || "Success"}`);
+          document.getElementById("confirm-pass").disabled = true;
         });
     });
   </script>
