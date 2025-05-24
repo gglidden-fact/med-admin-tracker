@@ -1,0 +1,17 @@
+[
+  {
+    "student": "Audrey Allen",
+    "block": "AM",
+    "medications": ["Vyvanse", "Zyrtec"]
+  },
+  {
+    "student": "Sebastian Miller",
+    "block": "NOON",
+    "medications": ["Keppra"]
+  },
+  {
+    "student": "Martin Aburto",
+    "block": "PM",
+    "medications": ["Prozac", "Guafenesin"]
+  }
+]

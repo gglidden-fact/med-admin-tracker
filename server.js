@@ -99,6 +99,38 @@ app.post("/log-block", async (req, res) => {
   }
 });
 
+// GET: Today's med schedule with given status
+app.get("/schedule/today", async (req, res) => {
+  try {
+    const schedule = require("./data/todays-schedule.json");
+
+    const today = new Date();
+    today.setHours(0, 0, 0, 0);
+
+    const logResult = await pool.query(
+      `SELECT student_id, med_code FROM logs WHERE timestamp >= $1`,
+      [today.toISOString()]
+    );
+
+    const givenSet = new Set(
+      logResult.rows.map(row => `${row.student_id}|${row.med_code}`)
+    );
+
+    const result = schedule.map(entry => {
+      const key = `${entry.student}|Block: ${entry.block}`;
+      return {
+        ...entry,
+        given: givenSet.has(key)
+      };
+    });
+
+    res.json(result);
+  } catch (err) {
+    console.error("Error in /schedule/today:", err);
+    res.status(500).json({ error: "Unable to load schedule" });
+  }
+});
+
 // Start server
 console.log("RAILWAY PORT ENV:", process.env.PORT);
 app.listen(port, () => {
