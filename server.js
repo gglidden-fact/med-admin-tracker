@@ -14,24 +14,32 @@ const pool = new Pool({
   ssl: { rejectUnauthorized: false },
 });
 
-// Middleware
 app.use(cors());
 app.use(express.json());
 app.use(express.static("public"));
 
-// Create logs table if it doesn't exist
+// Ensure logs table has needed fields
 pool.query(`
   CREATE TABLE IF NOT EXISTS logs (
     id SERIAL PRIMARY KEY,
     student_id TEXT,
     med_code TEXT,
-    timestamp TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+    timestamp TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    prn_reason TEXT,
+    prn_effect TEXT
   );
 `).catch(err => console.error("DB Init Error:", err));
 
-// POST: Log a med pass, prevent duplicates, save CSV, and subtract from control counts
+// POST: Log med pass with controls and PRN support
 app.post("/log-block", async (req, res) => {
-  const { student, block, staff, controls = [] } = req.body;
+  const {
+    student,
+    block,
+    staff,
+    controls = [],
+    prnReason = "",
+    prnEffect = ""
+  } = req.body;
 
   if (!student || !block || !staff) {
     return res.status(400).json({ error: "Missing student, block, or staff." });
@@ -42,7 +50,6 @@ app.post("/log-block", async (req, res) => {
   const [control1 = "", control2 = "", control3 = ""] = controls;
 
   try {
-    // Prevent duplicate entry
     const today = new Date();
     today.setHours(0, 0, 0, 0);
 
@@ -58,14 +65,13 @@ app.post("/log-block", async (req, res) => {
       return res.status(409).json({ error: "Med pass already logged today for this block." });
     }
 
-    // Save to database
     const dbResult = await pool.query(
-      `INSERT INTO logs (student_id, med_code) VALUES ($1, $2) RETURNING *`,
-      [student, med_code]
+      `INSERT INTO logs (student_id, med_code, prn_reason, prn_effect)
+       VALUES ($1, $2, $3, $4) RETURNING *`,
+      [student, med_code, prnReason, prnEffect]
     );
 
-    // Save to CSV archive
-    const csvRow = `"${student}","${block}","${staff}","${timestamp.toISOString()}","${control1}","${control2}","${control3}"\n`;
+    const csvRow = `"${student}","${block}","${staff}","${timestamp.toISOString()}","${control1}","${control2}","${control3}","${prnReason}","${prnEffect}"\n`;
     const archiveDir = path.join(__dirname, "archives");
     if (!fs.existsSync(archiveDir)) fs.mkdirSync(archiveDir);
 
@@ -73,14 +79,13 @@ app.post("/log-block", async (req, res) => {
     const filename = `${dateStr}-${block.toUpperCase()}.csv`;
     const filePath = path.join(archiveDir, filename);
 
-    const header = `"Student","Block","Staff","Timestamp","Control1","Control2","Control3"\n`;
+    const header = `"Student","Block","Staff","Timestamp","Control1","Control2","Control3","PRN_Reason","PRN_Effect"\n`;
     if (!fs.existsSync(filePath)) {
       fs.writeFileSync(filePath, header + csvRow);
     } else {
       fs.appendFileSync(filePath, csvRow);
     }
 
-    // Subtract 1 from control_counts table if control meds are listed
     for (const med of [control1, control2, control3]) {
       if (med) {
         await pool.query(
@@ -99,7 +104,7 @@ app.post("/log-block", async (req, res) => {
   }
 });
 
-// GET: Today's med schedule with given status
+// GET: Today's schedule with log status
 app.get("/schedule/today", async (req, res) => {
   try {
     const schedule = require("./data/todays-schedule.json");
@@ -107,27 +112,24 @@ app.get("/schedule/today", async (req, res) => {
     const today = new Date();
     today.setHours(0, 0, 0, 0);
 
-    const logResult = await pool.query(
+    const logs = await pool.query(
       `SELECT student_id, med_code FROM logs WHERE timestamp >= $1`,
       [today.toISOString()]
     );
 
     const givenSet = new Set(
-      logResult.rows.map(row => `${row.student_id}|${row.med_code}`)
+      logs.rows.map(row => `${row.student_id}|${row.med_code}`)
     );
 
     const result = schedule.map(entry => {
       const key = `${entry.student}|Block: ${entry.block}`;
-      return {
-        ...entry,
-        given: givenSet.has(key)
-      };
+      return { ...entry, given: givenSet.has(key) };
     });
 
     res.json(result);
   } catch (err) {
     console.error("Error in /schedule/today:", err);
-    res.status(500).json({ error: "Unable to load schedule" });
+    res.status(500).json({ error: "Failed to load schedule" });
   }
 });
 
