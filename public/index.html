@@ -4,15 +4,14 @@
   <meta charset="UTF-8" />
   <title>Franklin Med Admin</title>
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&display=swap" rel="stylesheet" />
   <link rel="stylesheet" href="style.css" />
 </head>
 <body>
   <header>
     <img src="logo-placeholder.png" alt="Franklin Logo" />
     <div>
-      <h1>Franklin Medication Admin</h1>
-      <p id="date-block"></p>
+      <h1>Franklin Medication Administration</h1>
     </div>
   </header>
 
@@ -31,6 +30,16 @@
         <option>Tekayiha Coleman (Beacon College- Summer Programs)</option>
         <option>George Glidden (Beacon College-Summer Programs)</option>
         <option>Veronica Simpkins (Beacon College-Summer Programs)</option>
+      </select>
+
+      <label for="blockSelect" style="margin-top: 1rem;">Current Med Block</label>
+      <select id="blockSelect" onchange="togglePrnFields()">
+        <option value="Morning">Morning (7:30–9:30a)</option>
+        <option value="NOON">NOON</option>
+        <option value="3-4P">3–4 PM</option>
+        <option value="Dinner">Dinner (5:30–6:30p)</option>
+        <option value="Bedtime">Bedtime (7:30–9:30p)</option>
+        <option value="PRN">PRN</option>
       </select>
     </section>
 
@@ -56,41 +65,48 @@
         </div>
       </div>
 
+      <div id="prnFields" style="display: none; margin-top: 1.5rem;">
+        <h3>PRN Medication Details</h3>
+
+        <label for="prnReason">Reason Given</label>
+        <input type="text" id="prnReason" placeholder="Enter reason for PRN med" />
+
+        <label for="prnEffect">Effectiveness</label>
+        <select id="prnEffect">
+          <option value="">Select outcome</option>
+          <option value="Effective">Effective</option>
+          <option value="Partially Effective">Partially Effective</option>
+          <option value="Not Effective">Not Effective</option>
+        </select>
+      </div>
+
       <button onclick="logMed()">Log Medication</button>
       <p class="success" id="statusMsg"></p>
+    </section>
+
+    <section class="panel" style="margin-top: 2rem;">
+      <button style="background-color: darkgreen;" onclick="completeMedPass()">✅ Complete Med Pass</button>
+      <p id="completeMsg" class="success"></p>
     </section>
   </main>
 
   <script>
     const staffSelect = document.getElementById("staff");
-    const dateBlock = document.getElementById("date-block");
-
-    const timeBlocks = [
-      { label: "Morning", start: 7.5, end: 9.5 },
-      { label: "NOON", start: 11.5, end: 12.5 },
-      { label: "3-4P", start: 15, end: 16 },
-      { label: "Dinner", start: 17.5, end: 18.5 },
-      { label: "Bedtime", start: 19.5, end: 21.5 },
-      { label: "PRN", start: 0, end: 24 }
-    ];
+    const blockSelect = document.getElementById("blockSelect");
 
     function getCurrentBlock() {
-      const now = new Date();
-      const hour = now.getHours() + now.getMinutes() / 60;
-      for (const block of timeBlocks) {
-        if (hour >= block.start && hour < block.end) return block.label;
-      }
-      return "PRN";
+      return blockSelect.value;
+    }
+
+    function togglePrnFields() {
+      const show = getCurrentBlock() === "PRN";
+      document.getElementById("prnFields").style.display = show ? "block" : "none";
     }
 
     window.onload = () => {
       const storedStaff = localStorage.getItem("adminStaff");
       if (storedStaff) staffSelect.value = storedStaff;
-
-      const today = new Date().toLocaleDateString(undefined, {
-        weekday: "long", year: "numeric", month: "short", day: "numeric"
-      });
-      dateBlock.textContent = `${today} — Current Block: ${getCurrentBlock()}`;
+      togglePrnFields();
     };
 
     staffSelect.addEventListener("change", () => {
@@ -98,6 +114,8 @@
     });
 
     async function logMed() {
+      togglePrnFields();
+
       const studentId = document.getElementById("studentId").value.trim();
       const medCode = document.getElementById("medCode").value.trim();
       const staff = staffSelect.value;
@@ -106,6 +124,8 @@
       const control1 = document.getElementById("control1").value.trim();
       const control2 = document.getElementById("control2").value.trim();
       const control3 = document.getElementById("control3").value.trim();
+      const prnReason = document.getElementById("prnReason").value.trim();
+      const prnEffect = document.getElementById("prnEffect").value;
 
       if (!studentId || !medCode || !staff) {
         alert("Please complete all required fields.");
@@ -119,7 +139,9 @@
           student: studentId,
           block,
           staff,
-          controls: [control1, control2, control3]
+          controls: [control1, control2, control3],
+          prnReason,
+          prnEffect
         })
       });
 
@@ -131,9 +153,17 @@
         document.getElementById("control1").value = "";
         document.getElementById("control2").value = "";
         document.getElementById("control3").value = "";
+        document.getElementById("prnReason").value = "";
+        document.getElementById("prnEffect").value = "";
       } else {
         alert(result.error || "Failed to log entry.");
       }
+    }
+
+    function completeMedPass() {
+      const block = getCurrentBlock();
+      const timestamp = new Date().toLocaleString();
+      document.getElementById("completeMsg").textContent = `✅ Med pass for ${block} completed at ${timestamp}. CSV saved server-side.`;
     }
   </script>
 </body>
