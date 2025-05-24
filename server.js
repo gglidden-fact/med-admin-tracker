@@ -146,6 +146,14 @@ app.get("/schedule/today", async (req, res) => {
 
 // Start server
 console.log("RAILWAY PORT ENV:", process.env.PORT);
+app.get("/logs", async (req, res) => {
+  try {
+    const result = await pool.query("SELECT * FROM logs ORDER BY timestamp DESC");
+    res.json(result.rows);
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+});
 app.listen(port, () => {
   console.log(`🚨 Server running on port ${port}`);
 });
