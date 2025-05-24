@@ -1,124 +1,158 @@
-Archived Med Pass History
-Student ID
-Med Code
-Timestamp
-Nurse Name
-Shift ID
-Submitted
-Loading...
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <title>Archived Med Pass History | Franklin Academy</title>
+  <title>Archived Med Pass History</title>
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <style>
     body {
-      font-family: 'Helvetica Neue', Helvetica, sans-serif;
-      background-color: #d6d2c4;
-      max-width: 900px;
-      margin: auto;
+      font-family: 'Segoe UI', sans-serif;
+      background-color: #f9f6f0;
+      margin: 0;
       padding: 2rem;
       color: #00263a;
     }
-    header {
-      display: flex;
-      align-items: center;
-      margin-bottom: 2rem;
+
+    .container {
+      max-width: 1000px;
+      margin: auto;
+      background: #fff;
+      padding: 2rem;
+      border-radius: 12px;
+      box-shadow: 0 0 10px rgba(0,0,0,0.1);
     }
-    header img {
-      height: 60px;
-      margin-right: 1rem;
-    }
+
     h1 {
-      font-family: Georgia, serif;
+      text-align: center;
       color: #861f41;
-      font-size: 1.8rem;
-      margin-bottom: 0.5rem;
+      font-family: Georgia, serif;
     }
+
+    .controls {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 1rem;
+      margin: 2rem 0;
+      align-items: center;
+    }
+
+    label {
+      font-weight: 600;
+    }
+
+    input, select, button {
+      padding: 0.5rem;
+      font-size: 1rem;
+      border-radius: 6px;
+      border: 1px solid #ccc;
+    }
+
     table {
       width: 100%;
       border-collapse: collapse;
-      background: white;
-      box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
-      border-radius: 8px;
-      overflow: hidden;
+      margin-top: 1rem;
     }
+
     th, td {
       padding: 0.75rem;
-      border-bottom: 1px solid #ddd;
+      border-bottom: 1px solid #ccc;
       text-align: left;
     }
+
     th {
+      background-color: #eee;
+    }
+
+    .download-link {
+      display: inline-block;
+      margin-top: 1rem;
+      padding: 0.5rem 1rem;
       background-color: #861f41;
       color: white;
-      font-weight: bold;
-    }
-    tr:nth-child(even) {
-      background-color: #f6f4f0;
-    }
-    .no-records {
-      text-align: center;
-      font-style: italic;
-      padding: 1rem;
-      color: #666;
+      text-decoration: none;
+      border-radius: 5px;
     }
   </style>
 </head>
 <body>
-  <header>
-    <img src="logo-placeholder.png" alt="Franklin Academy Logo" />
-    <div>
-      <h1>Archived Med Pass History</h1>
-    </div>
-  </header>
+  <div class="container">
+    <h1>Archived Med Pass History</h1>
 
-  <table>
-    <thead>
-      <tr>
-        <th>Student ID</th>
-        <th>Med Code</th>
-        <th>Timestamp</th>
-        <th>Nurse</th>
-        <th>Shift</th>
-        <th>Submitted</th>
-      </tr>
-    </thead>
-    <tbody id="history-body">
-      <tr><td colspan="6" class="no-records">Loading...</td></tr>
-    </tbody>
-  </table>
+    <div class="controls">
+      <label for="date">Select Date:</label>
+      <input type="date" id="date" />
+
+      <label for="block">Select Block:</label>
+      <select id="block">
+        <option value="AM">AM</option>
+        <option value="NOON">NOON</option>
+        <option value="PM">PM</option>
+        <option value="3-4P">3-4P</option>
+        <option value="PRN">PRN</option>
+      </select>
+
+      <button onclick="loadHistory()">Load History</button>
+    </div>
+
+    <a id="download-link" class="download-link" href="#" style="display:none;" download>Download CSV</a>
+
+    <table id="history-table">
+      <thead>
+        <tr>
+          <th>Student</th>
+          <th>Block</th>
+          <th>Staff</th>
+          <th>Timestamp</th>
+          <th>Control 1</th>
+          <th>Control 2</th>
+          <th>Control 3</th>
+        </tr>
+      </thead>
+      <tbody>
+        <!-- Populated dynamically -->
+      </tbody>
+    </table>
+  </div>
 
   <script>
-    fetch("/history")
-      .then(res => res.json())
-      .then(data => {
-        const tbody = document.getElementById("history-body");
+    async function loadHistory() {
+      const date = document.getElementById("date").value;
+      const block = document.getElementById("block").value;
+      const filename = `${date}-${block}.csv`;
+      const url = `/archives/${filename}`;
+
+      try {
+        const res = await fetch(url);
+        if (!res.ok) throw new Error("File not found.");
+
+        const csvText = await res.text();
+        const rows = csvText.trim().split("\n").slice(1); // skip header
+
+        const tbody = document.querySelector("#history-table tbody");
         tbody.innerHTML = "";
 
-        if (!data.length) {
-          tbody.innerHTML = "<tr><td colspan='6' class='no-records'>No archived passes found.</td></tr>";
-          return;
-        }
-
-        data.forEach(entry => {
-          const row = document.createElement("tr");
-          row.innerHTML = `
-            <td>${entry.student_id}</td>
-            <td>${entry.med_code}</td>
-            <td>${new Date(entry.timestamp).toLocaleString()}</td>
-            <td>${entry.nurse_name || ''}</td>
-            <td>${entry.shift_id || ''}</td>
-            <td>${new Date(entry.pass_submitted).toLocaleString()}</td>
-          `;
-          tbody.appendChild(row);
+        rows.forEach(row => {
+          const cols = row.split(",").map(col => col.replace(/(^"|"$)/g, ""));
+          const tr = document.createElement("tr");
+          cols.forEach(col => {
+            const td = document.createElement("td");
+            td.textContent = col;
+            tr.appendChild(td);
+          });
+          tbody.appendChild(tr);
         });
-      })
-      .catch(err => {
-        document.getElementById("history-body").innerHTML =
-          `<tr><td colspan='6' class='no-records'>Error loading history: ${err.message}</td></tr>`;
-      });
+
+        // Show download link
+        const link = document.getElementById("download-link");
+        link.href = url;
+        link.download = filename;
+        link.style.display = "inline-block";
+      } catch (err) {
+        alert("No archive found for this date/block.");
+        document.getElementById("history-table").querySelector("tbody").innerHTML = "";
+        document.getElementById("download-link").style.display = "none";
+      }
+    }
   </script>
 </body>
 </html>
