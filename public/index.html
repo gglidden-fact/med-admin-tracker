@@ -2,200 +2,155 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <title>Franklin Med Administration</title>
+  <title>Medication Administration</title>
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <style>
     body {
-      font-family: 'Segoe UI', Tahoma, sans-serif;
-      background-color: #f9f6f0;
+      font-family: 'Segoe UI', sans-serif;
+      background: #f9f9f9;
       color: #00263a;
-      margin: 0;
       padding: 2rem;
     }
-
-    .container {
-      max-width: 750px;
-      margin: auto;
-      background: white;
-      padding: 2rem 2.5rem;
-      border-radius: 12px;
-      box-shadow: 0 4px 20px rgba(0,0,0,0.08);
-    }
-
-    h1 {
-      text-align: center;
+    h1, h2 {
       color: #861f41;
-      font-family: Georgia, serif;
-      margin-bottom: 1.5rem;
     }
-
+    .section {
+      margin-bottom: 2rem;
+    }
     label {
-      font-weight: 600;
+      font-weight: bold;
       display: block;
       margin-top: 1rem;
     }
-
-    input, select {
-      width: 100%;
-      padding: 0.6rem;
-      margin-top: 0.3rem;
-      border: 1px solid #ccc;
-      border-radius: 6px;
+    input, select, button {
       font-size: 1rem;
+      padding: 0.5rem;
+      width: 100%;
+      max-width: 400px;
+      margin-top: 0.25rem;
     }
-
-    .row {
+    .control-group {
       display: flex;
       gap: 1rem;
       margin-top: 1rem;
     }
-
-    .row > div {
-      flex: 1;
+    .control-group input {
+      width: 100px;
     }
-
-    #student-meds {
-      margin-top: 1.5rem;
-      background: #f0f4f8;
-      padding: 1rem;
-      border-radius: 6px;
-      font-size: 0.95rem;
-    }
-
-    ul {
-      margin-top: 0.5rem;
-      padding-left: 1.2rem;
-    }
-
-    button {
-      margin-top: 1.5rem;
-      padding: 0.75rem;
-      font-size: 1rem;
-      background-color: #861f41;
-      color: white;
-      border: none;
-      border-radius: 6px;
-      width: 100%;
-      cursor: pointer;
-    }
-
-    button:disabled {
-      background-color: #ccc;
-      cursor: not-allowed;
-    }
-
-    .controls-group {
-      display: flex;
-      gap: 1rem;
+    .success {
+      color: green;
       margin-top: 1rem;
-    }
-
-    .controls-group input {
-      flex: 1;
-      text-align: center;
     }
   </style>
 </head>
 <body>
-  <div class="container">
-    <div style="text-align: center; margin-bottom: 1.5rem;">
-      <img src="/logo-placeholder.png" alt="Franklin Academy Logo" style="max-height: 70px;" />
+  <h1>Medication Administration</h1>
+  <p id="date-block"></p>
+
+  <div class="section">
+    <label for="staff">Administering Person:</label>
+    <input type="text" id="staff" placeholder="Enter your name" />
+  </div>
+
+  <div class="section">
+    <label for="studentId">Student ID:</label>
+    <input type="text" id="studentId" placeholder="Scan or enter Student ID" />
+
+    <label for="medCode">Medication Pack ID:</label>
+    <input type="text" id="medCode" placeholder="Scan or enter Medication Pack ID" />
+
+    <h3>Controlled Substance Tracking</h3>
+    <div class="control-group">
+      <label for="control1">Remaining #1</label>
+      <input type="number" id="control1" min="0" />
+      <label for="control2">Remaining #2</label>
+      <input type="number" id="control2" min="0" />
+      <label for="control3">Remaining #3</label>
+      <input type="number" id="control3" min="0" />
     </div>
 
-    <h1>Franklin Med Administration</h1>
-
-    <label for="staff">Select Nurse/Staff</label>
-    <select id="staff">
-      <option disabled selected value="">-- Choose Staff --</option>
-      <option>George Glidden (NP|Director)</option>
-      <option>Jennifer Spencer (RN)</option>
-      <option>Angie Oakes (RN)</option>
-      <option>Kristelle Caslangen (RN)</option>
-      <option>Pamela Cote (EMT)</option>
-      <option>Administrator-On-Duty</option>
-      <option>BAT On-Duty</option>
-      <option>Tekayiha Coleman (Beacon College- Summer Programs)</option>
-      <option>George Glidden (Beacon College-Summer Programs)</option>
-      <option>Veronica Simpkins (Beacon College-Summer Programs)</option>
-    </select>
-
-    <label for="student-id">Scan or Enter Student ID</label>
-    <input type="text" id="student-id" placeholder="e.g., Audrey Allen" autocomplete="off" />
-
-    <div id="student-meds"></div>
-
-    <label>Controlled Substance Count (if applicable)</label>
-    <div class="controls-group">
-      <input type="text" placeholder="Control 1" id="control-1">
-      <input type="text" placeholder="Control 2" id="control-2">
-      <input type="text" placeholder="Control 3" id="control-3">
-    </div>
-
-    <button id="confirm-pass" disabled>Complete Med Pass</button>
+    <button onclick="logMed()">Log Medication</button>
+    <p class="success" id="statusMsg"></p>
   </div>
 
   <script>
+    const staffInput = document.getElementById("staff");
+    const dateBlock = document.getElementById("date-block");
+
+    const timeBlocks = [
+      { label: "Morning", start: 7.5, end: 9.5 },
+      { label: "NOON", start: 11.5, end: 12.5 },
+      { label: "3-4P", start: 15, end: 16 },
+      { label: "Dinner", start: 17.5, end: 18.5 },
+      { label: "Bedtime", start: 19.5, end: 21.5 },
+      { label: "PRN", start: 0, end: 24 }
+    ];
+
     function getCurrentBlock() {
-      const hour = new Date().getHours();
-      if (hour < 11) return "AM";
-      if (hour < 14) return "NOON";
-      return "PM";
+      const now = new Date();
+      const hour = now.getHours() + now.getMinutes() / 60;
+      for (const block of timeBlocks) {
+        if (hour >= block.start && hour < block.end) return block.label;
+      }
+      return "PRN";
     }
 
-    document.getElementById("student-id").addEventListener("change", () => {
-      const studentId = document.getElementById("student-id").value.trim().toLowerCase();
-      const block = getCurrentBlock();
-      const output = document.getElementById("student-meds");
-      const button = document.getElementById("confirm-pass");
+    // Save and load admin staff from localStorage
+    window.onload = () => {
+      const storedStaff = localStorage.getItem("adminStaff");
+      if (storedStaff) staffInput.value = storedStaff;
 
-      fetch("/schedule/today")
-        .then(res => res.json())
-        .then(data => {
-          const match = data.find(
-            entry => entry.student.toLowerCase().includes(studentId) && entry.block === block
-          );
+      const today = new Date().toLocaleDateString(undefined, {
+        weekday: "long",
+        year: "numeric",
+        month: "short",
+        day: "numeric"
+      });
+      dateBlock.textContent = `${today} – Current Block: ${getCurrentBlock()}`;
+    };
 
-          if (match) {
-            output.innerHTML = `
-              <strong>${match.student} – ${match.block} Med Pass</strong>
-              <ul>${match.medications.map(med => `<li>${med}</li>`).join("")}</ul>
-            `;
-            button.disabled = false;
-            button.dataset.student = match.student;
-            button.dataset.block = match.block;
-          } else {
-            output.innerHTML = "<em>No scheduled medications found for this student and block.</em>";
-            button.disabled = true;
-          }
-        });
+    staffInput.addEventListener("change", () => {
+      localStorage.setItem("adminStaff", staffInput.value);
     });
 
-    document.getElementById("confirm-pass").addEventListener("click", () => {
-      const student = document.getElementById("confirm-pass").dataset.student;
-      const block = document.getElementById("confirm-pass").dataset.block;
-      const staff = document.getElementById("staff").value;
-      const control1 = document.getElementById("control-1").value;
-      const control2 = document.getElementById("control-2").value;
-      const control3 = document.getElementById("control-3").value;
+    async function logMed() {
+      const studentId = document.getElementById("studentId").value.trim();
+      const medCode = document.getElementById("medCode").value.trim();
+      const staff = staffInput.value.trim();
+      const block = getCurrentBlock();
 
-      fetch("/log-block", {
+      const control1 = document.getElementById("control1").value.trim();
+      const control2 = document.getElementById("control2").value.trim();
+      const control3 = document.getElementById("control3").value.trim();
+
+      if (!studentId || !medCode || !staff) {
+        alert("Please complete all required fields.");
+        return;
+      }
+
+      const res = await fetch("/log-block", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
-          student,
+          student: studentId,
           block,
           staff,
-          controls: [control1, control2, control3].filter(Boolean)
+          controls: [control1, control2, control3]
         })
-      })
-      .then(res => res.json())
-      .then(response => {
-        alert(`Logged for ${student} (${block}) by ${staff}`);
-        document.getElementById("confirm-pass").disabled = true;
-        document.getElementById("student-id").value = "";
-        document.getElementById("student-meds").innerHTML = "";
       });
-    });
+
+      const result = await res.json();
+      if (res.ok) {
+        document.getElementById("statusMsg").textContent = `✅ Logged successfully for ${studentId}`;
+        document.getElementById("studentId").value = "";
+        document.getElementById("medCode").value = "";
+        document.getElementById("control1").value = "";
+        document.getElementById("control2").value = "";
+        document.getElementById("control3").value = "";
+      } else {
+        alert(result.error || "Failed to log entry.");
+      }
+    }
   </script>
 </body>
 </html>
