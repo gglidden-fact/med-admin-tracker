@@ -135,6 +135,17 @@ app.get("/schedule/today", async (req, res) => {
 
 // Start server
 console.log("RAILWAY PORT ENV:", process.env.PORT);
+// TEMP: Add prn columns if missing
+app.get("/debug/add-prn-columns", async (req, res) => {
+  try {
+    await pool.query(`ALTER TABLE logs ADD COLUMN IF NOT EXISTS prn_reason TEXT`);
+    await pool.query(`ALTER TABLE logs ADD COLUMN IF NOT EXISTS prn_effect TEXT`);
+    res.send("✅ Columns prn_reason and prn_effect added to logs table.");
+  } catch (err) {
+    console.error("Failed to alter table:", err.message);
+    res.status(500).send("❌ Failed to add columns. " + err.message);
+  }
+});
 app.listen(port, () => {
   console.log(`🚨 Server running on port ${port}`);
 });
