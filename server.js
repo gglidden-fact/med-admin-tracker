@@ -29,7 +29,7 @@ pool.query(`
   );
 `).catch(err => console.error("DB Init Error:", err));
 
-// POST: Log a med pass, prevent duplicates, and save CSV
+// POST: Log a med pass, prevent duplicates, save CSV, and subtract from control counts
 app.post("/log-block", async (req, res) => {
   const { student, block, staff, controls = [] } = req.body;
 
@@ -78,6 +78,18 @@ app.post("/log-block", async (req, res) => {
       fs.writeFileSync(filePath, header + csvRow);
     } else {
       fs.appendFileSync(filePath, csvRow);
+    }
+
+    // Subtract 1 from control_counts table if control meds are listed
+    for (const med of [control1, control2, control3]) {
+      if (med) {
+        await pool.query(
+          `UPDATE control_counts
+           SET count = GREATEST(count - 1, 0)
+           WHERE student_id = $1 AND medication = $2`,
+          [student, med]
+        );
+      }
     }
 
     res.json({ status: "success", entry: dbResult.rows[0] });
