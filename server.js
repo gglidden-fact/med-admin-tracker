@@ -132,7 +132,7 @@ app.get("/", (req, res) => {
 
 // Start server
 console.log("RAILWAY PORT ENV:", process.env.PORT);
-// GET: Return today's real med schedule from Excel file
+// GET: Return today's real med schedule grouped by time block
 app.get("/schedule/today", (req, res) => {
   try {
     const filePath = path.join(__dirname, "data", "med-admin-record.xlsx");
@@ -140,31 +140,54 @@ app.get("/schedule/today", (req, res) => {
     const today = new Date();
     const dayCol = today.getDate().toString(); // "1" to "31"
 
-    let schedule = [];
+    const blockTimes = {
+      AM: ["6a", "7a", "8a", "9a", "10a", "11a"],
+      NOON: ["12p", "1p"],
+      PM: ["2p", "3p", "4p", "5p", "6p", "7p", "8p", "9p"]
+    };
+
+    let groupedSchedule = {};
 
     workbook.SheetNames.forEach(sheetName => {
       const sheet = XLSX.utils.sheet_to_json(workbook.Sheets[sheetName], { header: 1 });
       for (let i = 1; i < sheet.length; i += 3) {
         const row = sheet[i];
         if (!row || !row[0] || !row[1]) continue;
+
         const med = row[0].toString().trim();
-        const time = row[1].toString().trim();
+        const time = row[1].toString().trim().toLowerCase();
         const given = row[parseInt(dayCol)] ? true : false;
 
-        schedule.push({
-          student: sheetName,
-          time,
-          medication: med,
-          scheduled: true,
-          given
-        });
+        // Determine time block
+        let block = "OTHER";
+        for (const [b, list] of Object.entries(blockTimes)) {
+          if (list.includes(time)) {
+            block = b;
+            break;
+          }
+        }
+
+        const key = `${sheetName}|${block}`;
+        if (!groupedSchedule[key]) {
+          groupedSchedule[key] = {
+            student: sheetName,
+            block,
+            medications: [],
+            scheduled: true,
+            given: true
+          };
+        }
+
+        groupedSchedule[key].medications.push(med);
+        if (!given) groupedSchedule[key].given = false;
       }
     });
 
-    res.json(schedule);
+    const finalSchedule = Object.values(groupedSchedule);
+    res.json(finalSchedule);
   } catch (err) {
-    console.error("Error loading schedule:", err);
-    res.status(500).json({ error: "Failed to load real-time med schedule." });
+    console.error("Error loading grouped schedule:", err);
+    res.status(500).json({ error: "Failed to load grouped med schedule." });
   }
 });
 app.listen(port, () => {
