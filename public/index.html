@@ -2,104 +2,64 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <title>Franklin Medication Administration</title>
+  <title>Franklin Med Admin</title>
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <style>
-    body {
-      font-family: 'Segoe UI', sans-serif;
-      background: #f8f9fa;
-      color: #00263a;
-      padding: 2rem;
-    }
-    header {
-      display: flex;
-      align-items: center;
-      gap: 1rem;
-      margin-bottom: 1.5rem;
-    }
-    header img {
-      height: 70px;
-    }
-    h1 {
-      color: #861f41;
-    }
-    label {
-      display: block;
-      margin-top: 1rem;
-      font-weight: bold;
-    }
-    input, select, button {
-      width: 100%;
-      max-width: 400px;
-      padding: 0.5rem;
-      font-size: 1rem;
-      margin-top: 0.25rem;
-    }
-    .control-group {
-      display: flex;
-      gap: 1rem;
-      margin-top: 1rem;
-      align-items: center;
-    }
-    .control-group input {
-      width: 100px;
-    }
-    .section {
-      margin-bottom: 2rem;
-    }
-    .success {
-      color: green;
-      font-weight: bold;
-      margin-top: 1rem;
-    }
-  </style>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css" />
 </head>
 <body>
   <header>
     <img src="logo-placeholder.png" alt="Franklin Logo" />
     <div>
-      <h1>Medication Administration</h1>
+      <h1>Franklin Medication Admin</h1>
       <p id="date-block"></p>
     </div>
   </header>
 
-  <div class="section">
-    <label for="staff">Administering Person:</label>
-    <select id="staff">
-      <option value="">Select your name</option>
-      <option>George Glidden (NP|Director)</option>
-      <option>Jennifer Spencer (RN)</option>
-      <option>Angie Oakes (RN)</option>
-      <option>Kristelle Caslangen (RN)</option>
-      <option>Pamela Cote (EMT)</option>
-      <option>Administrator-On-Duty</option>
-      <option>BAT On-Duty</option>
-      <option>Tekayiha Coleman (Beacon College- Summer Programs)</option>
-      <option>George Glidden (Beacon College-Summer Programs)</option>
-      <option>Veronica Simpkins (Beacon College-Summer Programs)</option>
-    </select>
-  </div>
+  <main>
+    <section class="panel">
+      <label for="staff">Administering Person</label>
+      <select id="staff">
+        <option value="">Select your name</option>
+        <option>George Glidden (NP|Director)</option>
+        <option>Jennifer Spencer (RN)</option>
+        <option>Angie Oakes (RN)</option>
+        <option>Kristelle Caslangen (RN)</option>
+        <option>Pamela Cote (EMT)</option>
+        <option>Administrator-On-Duty</option>
+        <option>BAT On-Duty</option>
+        <option>Tekayiha Coleman (Beacon College- Summer Programs)</option>
+        <option>George Glidden (Beacon College-Summer Programs)</option>
+        <option>Veronica Simpkins (Beacon College-Summer Programs)</option>
+      </select>
+    </section>
 
-  <div class="section">
-    <label for="studentId">Student ID:</label>
-    <input type="text" id="studentId" placeholder="Scan or enter Student ID" />
+    <section class="panel">
+      <label for="studentId">Student ID</label>
+      <input type="text" id="studentId" placeholder="Scan or enter Student ID" />
 
-    <label for="medCode">Medication Pack ID:</label>
-    <input type="text" id="medCode" placeholder="Scan or enter Medication Pack ID" />
+      <label for="medCode">Medication Pack ID</label>
+      <input type="text" id="medCode" placeholder="Scan or enter Medication Pack ID" />
 
-    <h3>Controlled Substance Tracking</h3>
-    <div class="control-group">
-      <label for="control1">Remaining #1</label>
-      <input type="number" id="control1" min="0" />
-      <label for="control2">Remaining #2</label>
-      <input type="number" id="control2" min="0" />
-      <label for="control3">Remaining #3</label>
-      <input type="number" id="control3" min="0" />
-    </div>
+      <div class="control-row">
+        <div>
+          <label for="control1">Remaining #1</label>
+          <input type="number" id="control1" min="0" />
+        </div>
+        <div>
+          <label for="control2">Remaining #2</label>
+          <input type="number" id="control2" min="0" />
+        </div>
+        <div>
+          <label for="control3">Remaining #3</label>
+          <input type="number" id="control3" min="0" />
+        </div>
+      </div>
 
-    <button onclick="logMed()">Log Medication</button>
-    <p class="success" id="statusMsg"></p>
-  </div>
+      <button onclick="logMed()">Log Medication</button>
+      <p class="success" id="statusMsg"></p>
+    </section>
+  </main>
 
   <script>
     const staffSelect = document.getElementById("staff");
@@ -123,7 +83,6 @@
       return "PRN";
     }
 
-    // Show date + current block on load
     window.onload = () => {
       const storedStaff = localStorage.getItem("adminStaff");
       if (storedStaff) staffSelect.value = storedStaff;
@@ -131,7 +90,7 @@
       const today = new Date().toLocaleDateString(undefined, {
         weekday: "long", year: "numeric", month: "short", day: "numeric"
       });
-      dateBlock.textContent = `${today} – Current Block: ${getCurrentBlock()}`;
+      dateBlock.textContent = `${today} — Current Block: ${getCurrentBlock()}`;
     };
 
     staffSelect.addEventListener("change", () => {
