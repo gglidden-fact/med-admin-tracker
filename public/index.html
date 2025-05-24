@@ -2,59 +2,81 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <title>Med Admin Tracker | Franklin Academy</title>
+  <title>Franklin Med Administration</title>
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <style>
     body {
-      font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
+      font-family: 'Segoe UI', Tahoma, sans-serif;
       background-color: #f9f6f0;
+      color: #00263a;
       margin: 0;
       padding: 2rem;
-      color: #00263a;
     }
 
     .container {
-      max-width: 700px;
+      max-width: 750px;
       margin: auto;
-      background: #fff;
-      padding: 2rem;
+      background: white;
+      padding: 2rem 2.5rem;
       border-radius: 12px;
-      box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+      box-shadow: 0 4px 20px rgba(0,0,0,0.08);
     }
 
     h1 {
       text-align: center;
       color: #861f41;
       font-family: Georgia, serif;
-      margin-bottom: 2rem;
+      margin-bottom: 1.5rem;
     }
 
     label {
+      font-weight: 600;
       display: block;
       margin-top: 1rem;
-      font-weight: 600;
-      font-size: 1rem;
     }
 
-    input[type="text"] {
+    input, select {
       width: 100%;
-      padding: 0.7rem;
-      font-size: 1rem;
+      padding: 0.6rem;
       margin-top: 0.3rem;
       border: 1px solid #ccc;
       border-radius: 6px;
+      font-size: 1rem;
+    }
+
+    .row {
+      display: flex;
+      gap: 1rem;
+      margin-top: 1rem;
+    }
+
+    .row > div {
+      flex: 1;
+    }
+
+    #student-meds {
+      margin-top: 1.5rem;
+      background: #f0f4f8;
+      padding: 1rem;
+      border-radius: 6px;
+      font-size: 0.95rem;
+    }
+
+    ul {
+      margin-top: 0.5rem;
+      padding-left: 1.2rem;
     }
 
     button {
       margin-top: 1.5rem;
-      padding: 0.75rem 1.5rem;
+      padding: 0.75rem;
       font-size: 1rem;
       background-color: #861f41;
       color: white;
       border: none;
       border-radius: 6px;
-      cursor: pointer;
       width: 100%;
+      cursor: pointer;
     }
 
     button:disabled {
@@ -62,17 +84,15 @@
       cursor: not-allowed;
     }
 
-    #student-meds {
-      margin-top: 1.5rem;
-      font-size: 0.95rem;
-      background: #f3f3f3;
-      padding: 1rem;
-      border-radius: 8px;
+    .controls-group {
+      display: flex;
+      gap: 1rem;
+      margin-top: 1rem;
     }
 
-    ul {
-      margin-top: 0.5rem;
-      padding-left: 1.2rem;
+    .controls-group input {
+      flex: 1;
+      text-align: center;
     }
   </style>
 </head>
@@ -80,10 +100,33 @@
   <div class="container">
     <h1>Franklin Med Administration</h1>
 
+    <label for="staff">Select Nurse/Staff</label>
+    <select id="staff">
+      <option disabled selected value="">-- Choose Staff --</option>
+      <option>George Glidden (NP|Director)</option>
+      <option>Jennifer Spencer (RN)</option>
+      <option>Angie Oakes (RN)</option>
+      <option>Kristelle Caslangen (RN)</option>
+      <option>Pamela Cote (EMT)</option>
+      <option>Administrator-On-Duty</option>
+      <option>BAT On-Duty</option>
+      <option>Tekayiha Coleman (Beacon College- Summer Programs)</option>
+      <option>George Glidden (Beacon College-Summer Programs)</option>
+      <option>Veronica Simpkins (Beacon College-Summer Programs)</option>
+    </select>
+
     <label for="student-id">Scan or Enter Student ID</label>
     <input type="text" id="student-id" placeholder="e.g., Audrey Allen" autocomplete="off" />
 
     <div id="student-meds"></div>
+
+    <label>Controlled Substance Count (if applicable)</label>
+    <div class="controls-group">
+      <input type="text" placeholder="Control 1" id="control-1">
+      <input type="text" placeholder="Control 2" id="control-2">
+      <input type="text" placeholder="Control 3" id="control-3">
+    </div>
+
     <button id="confirm-pass" disabled>Complete Med Pass</button>
   </div>
 
@@ -126,17 +169,28 @@
     document.getElementById("confirm-pass").addEventListener("click", () => {
       const student = document.getElementById("confirm-pass").dataset.student;
       const block = document.getElementById("confirm-pass").dataset.block;
+      const staff = document.getElementById("staff").value;
+      const control1 = document.getElementById("control-1").value;
+      const control2 = document.getElementById("control-2").value;
+      const control3 = document.getElementById("control-3").value;
 
       fetch("/log-block", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ student, block })
+        body: JSON.stringify({
+          student,
+          block,
+          staff,
+          controls: [control1, control2, control3].filter(Boolean)
+        })
       })
-        .then(res => res.json())
-        .then(response => {
-          alert(`Logged: ${response.status || "Success"}`);
-          document.getElementById("confirm-pass").disabled = true;
-        });
+      .then(res => res.json())
+      .then(response => {
+        alert(`Logged for ${student} (${block}) by ${staff}`);
+        document.getElementById("confirm-pass").disabled = true;
+        document.getElementById("student-id").value = "";
+        document.getElementById("student-meds").innerHTML = "";
+      });
     });
   </script>
 </body>
