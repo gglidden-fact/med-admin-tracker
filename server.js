@@ -4,6 +4,7 @@ const cors = require("cors");
 const { Pool } = require("pg");
 const fs = require("fs");
 const { Parser } = require("json2csv");
+const XLSX = require("xlsx");
 require("dotenv").config();
 
 const app = express();
@@ -131,20 +132,39 @@ app.get("/", (req, res) => {
 
 // Start server
 console.log("RAILWAY PORT ENV:", process.env.PORT);
-// GET: Return today's med schedule (demo version)
-app.get("/schedule/today", async (req, res) => {
+// GET: Return today's real med schedule from Excel file
+app.get("/schedule/today", (req, res) => {
   try {
-    const today = new Date().toISOString().slice(0, 10);
+    const filePath = path.join(__dirname, "data", "med-admin-record.xlsx");
+    const workbook = XLSX.readFile(filePath);
+    const today = new Date();
+    const dayCol = today.getDate().toString(); // "1" to "31"
 
-    const demoSchedule = [
-      { student: "Audrey Allen", time: "08:00", medication: "Vyvanse 30mg", scheduled: true, given: false },
-      { student: "Evan Aillon", time: "08:00", medication: "Spironolactone 100mg", scheduled: true, given: false },
-      { student: "Martin Solari", time: "08:00", medication: "Methylphenidate 36mg", scheduled: true, given: true }
-    ];
+    let schedule = [];
 
-    res.json(demoSchedule);
+    workbook.SheetNames.forEach(sheetName => {
+      const sheet = XLSX.utils.sheet_to_json(workbook.Sheets[sheetName], { header: 1 });
+      for (let i = 1; i < sheet.length; i += 3) {
+        const row = sheet[i];
+        if (!row || !row[0] || !row[1]) continue;
+        const med = row[0].toString().trim();
+        const time = row[1].toString().trim();
+        const given = row[parseInt(dayCol)] ? true : false;
+
+        schedule.push({
+          student: sheetName,
+          time,
+          medication: med,
+          scheduled: true,
+          given
+        });
+      }
+    });
+
+    res.json(schedule);
   } catch (err) {
-    res.status(500).json({ error: "Failed to load today's schedule." });
+    console.error("Error loading schedule:", err);
+    res.status(500).json({ error: "Failed to load real-time med schedule." });
   }
 });
 app.listen(port, () => {
