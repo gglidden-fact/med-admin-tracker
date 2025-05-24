@@ -2,54 +2,82 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <title>Medication Administration</title>
+  <title>Franklin Medication Administration</title>
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <style>
     body {
       font-family: 'Segoe UI', sans-serif;
-      background: #f9f9f9;
+      background: #f8f9fa;
       color: #00263a;
       padding: 2rem;
     }
-    h1, h2 {
+    header {
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+      margin-bottom: 1.5rem;
+    }
+    header img {
+      height: 70px;
+    }
+    h1 {
       color: #861f41;
     }
-    .section {
-      margin-bottom: 2rem;
-    }
     label {
-      font-weight: bold;
       display: block;
       margin-top: 1rem;
+      font-weight: bold;
     }
     input, select, button {
-      font-size: 1rem;
-      padding: 0.5rem;
       width: 100%;
       max-width: 400px;
+      padding: 0.5rem;
+      font-size: 1rem;
       margin-top: 0.25rem;
     }
     .control-group {
       display: flex;
       gap: 1rem;
       margin-top: 1rem;
+      align-items: center;
     }
     .control-group input {
       width: 100px;
     }
+    .section {
+      margin-bottom: 2rem;
+    }
     .success {
       color: green;
+      font-weight: bold;
       margin-top: 1rem;
     }
   </style>
 </head>
 <body>
-  <h1>Medication Administration</h1>
-  <p id="date-block"></p>
+  <header>
+    <img src="logo-placeholder.png" alt="Franklin Logo" />
+    <div>
+      <h1>Medication Administration</h1>
+      <p id="date-block"></p>
+    </div>
+  </header>
 
   <div class="section">
     <label for="staff">Administering Person:</label>
-    <input type="text" id="staff" placeholder="Enter your name" />
+    <select id="staff">
+      <option value="">Select your name</option>
+      <option>George Glidden (NP|Director)</option>
+      <option>Jennifer Spencer (RN)</option>
+      <option>Angie Oakes (RN)</option>
+      <option>Kristelle Caslangen (RN)</option>
+      <option>Pamela Cote (EMT)</option>
+      <option>Administrator-On-Duty</option>
+      <option>BAT On-Duty</option>
+      <option>Tekayiha Coleman (Beacon College- Summer Programs)</option>
+      <option>George Glidden (Beacon College-Summer Programs)</option>
+      <option>Veronica Simpkins (Beacon College-Summer Programs)</option>
+    </select>
   </div>
 
   <div class="section">
@@ -74,7 +102,7 @@
   </div>
 
   <script>
-    const staffInput = document.getElementById("staff");
+    const staffSelect = document.getElementById("staff");
     const dateBlock = document.getElementById("date-block");
 
     const timeBlocks = [
@@ -95,28 +123,25 @@
       return "PRN";
     }
 
-    // Save and load admin staff from localStorage
+    // Show date + current block on load
     window.onload = () => {
       const storedStaff = localStorage.getItem("adminStaff");
-      if (storedStaff) staffInput.value = storedStaff;
+      if (storedStaff) staffSelect.value = storedStaff;
 
       const today = new Date().toLocaleDateString(undefined, {
-        weekday: "long",
-        year: "numeric",
-        month: "short",
-        day: "numeric"
+        weekday: "long", year: "numeric", month: "short", day: "numeric"
       });
       dateBlock.textContent = `${today} – Current Block: ${getCurrentBlock()}`;
     };
 
-    staffInput.addEventListener("change", () => {
-      localStorage.setItem("adminStaff", staffInput.value);
+    staffSelect.addEventListener("change", () => {
+      localStorage.setItem("adminStaff", staffSelect.value);
     });
 
     async function logMed() {
       const studentId = document.getElementById("studentId").value.trim();
       const medCode = document.getElementById("medCode").value.trim();
-      const staff = staffInput.value.trim();
+      const staff = staffSelect.value;
       const block = getCurrentBlock();
 
       const control1 = document.getElementById("control1").value.trim();
