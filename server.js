@@ -131,6 +131,22 @@ app.get("/", (req, res) => {
 
 // Start server
 console.log("RAILWAY PORT ENV:", process.env.PORT);
+// GET: Return today's med schedule (demo version)
+app.get("/schedule/today", async (req, res) => {
+  try {
+    const today = new Date().toISOString().slice(0, 10);
+
+    const demoSchedule = [
+      { student: "Audrey Allen", time: "08:00", medication: "Vyvanse 30mg", scheduled: true, given: false },
+      { student: "Evan Aillon", time: "08:00", medication: "Spironolactone 100mg", scheduled: true, given: false },
+      { student: "Martin Solari", time: "08:00", medication: "Methylphenidate 36mg", scheduled: true, given: true }
+    ];
+
+    res.json(demoSchedule);
+  } catch (err) {
+    res.status(500).json({ error: "Failed to load today's schedule." });
+  }
+});
 app.listen(port, () => {
   console.log("🚨 This is the real server.js from George's Mac");
   console.log(`Server running on port ${port}`);
