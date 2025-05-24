@@ -2,157 +2,67 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <title>Archived Med Pass History</title>
+  <title>Franklin Archive History</title>
   <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="style.css" />
   <style>
-    body {
-      font-family: 'Segoe UI', sans-serif;
-      background-color: #f9f6f0;
-      margin: 0;
-      padding: 2rem;
-      color: #00263a;
+    ul {
+      list-style: none;
+      padding: 0;
+      margin-top: 1rem;
     }
-
-    .container {
-      max-width: 1000px;
-      margin: auto;
-      background: #fff;
-      padding: 2rem;
-      border-radius: 12px;
-      box-shadow: 0 0 10px rgba(0,0,0,0.1);
+    li {
+      padding: 0.5rem 0;
     }
-
-    h1 {
-      text-align: center;
+    a {
       color: #861f41;
-      font-family: Georgia, serif;
-    }
-
-    .controls {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 1rem;
-      margin: 2rem 0;
-      align-items: center;
-    }
-
-    label {
+      text-decoration: none;
       font-weight: 600;
     }
-
-    input, select, button {
-      padding: 0.5rem;
-      font-size: 1rem;
-      border-radius: 6px;
-      border: 1px solid #ccc;
-    }
-
-    table {
-      width: 100%;
-      border-collapse: collapse;
-      margin-top: 1rem;
-    }
-
-    th, td {
-      padding: 0.75rem;
-      border-bottom: 1px solid #ccc;
-      text-align: left;
-    }
-
-    th {
-      background-color: #eee;
-    }
-
-    .download-link {
-      display: inline-block;
-      margin-top: 1rem;
-      padding: 0.5rem 1rem;
-      background-color: #861f41;
-      color: white;
-      text-decoration: none;
-      border-radius: 5px;
+    a:hover {
+      text-decoration: underline;
     }
   </style>
 </head>
 <body>
-  <div class="container">
-    <h1>Archived Med Pass History</h1>
-
-    <div class="controls">
-      <label for="date">Select Date:</label>
-      <input type="date" id="date" />
-
-      <label for="block">Select Block:</label>
-      <select id="block">
-        <option value="AM">AM</option>
-        <option value="NOON">NOON</option>
-        <option value="PM">PM</option>
-        <option value="3-4P">3-4P</option>
-        <option value="PRN">PRN</option>
-      </select>
-
-      <button onclick="loadHistory()">Load History</button>
+  <header>
+    <img src="logo-placeholder.png" alt="Franklin Logo" />
+    <div>
+      <h1>Archived Med Pass Logs</h1>
+      <p>Download CSV records of past med passes</p>
     </div>
+  </header>
 
-    <a id="download-link" class="download-link" href="#" style="display:none;" download>Download CSV</a>
-
-    <table id="history-table">
-      <thead>
-        <tr>
-          <th>Student</th>
-          <th>Block</th>
-          <th>Staff</th>
-          <th>Timestamp</th>
-          <th>Control 1</th>
-          <th>Control 2</th>
-          <th>Control 3</th>
-        </tr>
-      </thead>
-      <tbody>
-        <!-- Populated dynamically -->
-      </tbody>
-    </table>
-  </div>
+  <main class="panel">
+    <ul id="fileList">
+      <li>Loading...</li>
+    </ul>
+  </main>
 
   <script>
-    async function loadHistory() {
-      const date = document.getElementById("date").value;
-      const block = document.getElementById("block").value;
-      const filename = `${date}-${block}.csv`;
-      const url = `/archives/${filename}`;
+    async function loadArchives() {
+      const response = await fetch("/archives/");
+      const html = await response.text();
+      const parser = new DOMParser();
+      const doc = parser.parseFromString(html, "text/html");
+      const links = [...doc.querySelectorAll("a")].filter(link => link.href.endsWith(".csv"));
 
-      try {
-        const res = await fetch(url);
-        if (!res.ok) throw new Error("File not found.");
+      const list = document.getElementById("fileList");
+      list.innerHTML = "";
 
-        const csvText = await res.text();
-        const rows = csvText.trim().split("\n").slice(1); // skip header
-
-        const tbody = document.querySelector("#history-table tbody");
-        tbody.innerHTML = "";
-
-        rows.forEach(row => {
-          const cols = row.split(",").map(col => col.replace(/(^"|"$)/g, ""));
-          const tr = document.createElement("tr");
-          cols.forEach(col => {
-            const td = document.createElement("td");
-            td.textContent = col;
-            tr.appendChild(td);
-          });
-          tbody.appendChild(tr);
-        });
-
-        // Show download link
-        const link = document.getElementById("download-link");
-        link.href = url;
-        link.download = filename;
-        link.style.display = "inline-block";
-      } catch (err) {
-        alert("No archive found for this date/block.");
-        document.getElementById("history-table").querySelector("tbody").innerHTML = "";
-        document.getElementById("download-link").style.display = "none";
-      }
+      links.forEach(link => {
+        const li = document.createElement("li");
+        const a = document.createElement("a");
+        a.href = link.href;
+        a.textContent = link.textContent;
+        a.target = "_blank";
+        li.appendChild(a);
+        list.appendChild(li);
+      });
     }
+
+    loadArchives();
   </script>
 </body>
 </html>
