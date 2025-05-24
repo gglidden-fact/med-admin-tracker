@@ -1,86 +1,103 @@
-/* Futuristic dark theme for Franklin Med Tracker */
+/* Franklin Med Tracker — Branded Light Theme */
 body {
-  background-color: #111;
-  color: #e8e8e8;
+  background-color: #f4f4f6;
   font-family: 'Inter', sans-serif;
+  color: #00263a;
+  margin: 0;
   padding: 2rem;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
 }
 
 header {
   display: flex;
   align-items: center;
   gap: 1rem;
+  max-width: 700px;
+  width: 100%;
   margin-bottom: 2rem;
 }
 
 header img {
-  height: 60px;
+  height: 65px;
 }
 
 h1 {
-  font-size: 2rem;
-  color: #61dafb;
+  color: #861f41;
+  font-size: 1.8rem;
+  margin: 0;
 }
 
-label {
-  font-weight: 600;
-  margin-top: 1rem;
-  display: block;
-}
-
-input, select {
-  background: #222;
-  border: 1px solid #555;
-  color: #e8e8e8;
-  padding: 0.5rem;
-  border-radius: 6px;
-  width: 100%;
-  margin-top: 0.3rem;
-}
-
-input:focus, select:focus {
-  outline: 2px solid #61dafb;
-  border-color: #61dafb;
-}
-
-button {
-  margin-top: 1.5rem;
-  background: linear-gradient(90deg, #61dafb, #39c9b4);
-  color: #000;
-  font-weight: bold;
-  border: none;
-  padding: 0.75rem 1.25rem;
-  font-size: 1rem;
-  border-radius: 8px;
-  cursor: pointer;
-  transition: transform 0.15s ease;
-}
-
-button:hover {
-  transform: scale(1.03);
+p {
+  margin: 0.25rem 0 0;
 }
 
 main {
-  max-width: 600px;
-  margin: auto;
+  max-width: 700px;
+  width: 100%;
 }
 
 .panel {
-  background: #1a1a1a;
-  padding: 1.5rem;
+  background-color: #fff;
   border-radius: 12px;
-  box-shadow: 0 0 12px rgba(97, 218, 251, 0.2);
+  padding: 2rem;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.06);
   margin-bottom: 2rem;
+}
+
+label {
+  display: block;
+  font-weight: 600;
+  margin-top: 1rem;
+}
+
+input, select {
+  width: 100%;
+  padding: 0.5rem;
+  margin-top: 0.3rem;
+  font-size: 1rem;
+  border: 1px solid #ccc;
+  border-radius: 8px;
+  background-color: #fdfdfd;
+}
+
+input:focus, select:focus {
+  border-color: #861f41;
+  outline: none;
+  box-shadow: 0 0 0 2px rgba(134, 31, 65, 0.2);
 }
 
 .control-row {
   display: flex;
   gap: 1rem;
   margin-top: 1rem;
+  justify-content: space-between;
+}
+
+.control-row div {
+  flex: 1;
+}
+
+button {
+  margin-top: 1.5rem;
+  background-color: #861f41;
+  color: white;
+  border: none;
+  padding: 0.75rem 1.25rem;
+  font-size: 1rem;
+  border-radius: 8px;
+  cursor: pointer;
+  font-weight: 600;
+  transition: background 0.2s ease;
+}
+
+button:hover {
+  background-color: #a62a55;
 }
 
 .success {
   margin-top: 1rem;
-  color: #00e676;
+  color: #008000;
   font-weight: bold;
 }
